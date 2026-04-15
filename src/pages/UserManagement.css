@@ -1,0 +1,139 @@
+.user-management {
+  padding-bottom: 20px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.page-card {
+  border-radius: 12px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-list .ant-list-item {
+  padding: 0 !important;
+  border: none !important;
+}
+
+.user-info-card {
+  border-radius: 10px;
+  width: 100%;
+}
+
+.user-info-card .ant-card-body {
+  padding: 12px 14px;
+}
+
+.user-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.user-avatar {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  flex-shrink: 0;
+}
+
+.user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.username {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+.role-tag {
+  font-size: 11px;
+  line-height: 18px;
+  padding: 0 8px;
+  border-radius: 9px;
+  flex-shrink: 0;
+}
+
+.user-meta {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  line-height: 1.4;
+}
+
+.separator {
+  color: #ddd;
+  margin: 0 4px;
+}
+
+.email-text {
+  color: #888;
+  word-break: break-all;
+}
+
+.user-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px dashed #eee;
+}
+
+.create-time {
+  font-size: 11px;
+  color: #aaa;
+}
+
+.user-bottom .ant-btn {
+  padding: 0 4px;
+  font-size: 12px;
+  height: auto;
+}
+
+.loading-more {
+  text-align: center;
+  padding: 16px;
+  color: #999;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.load-complete {
+  text-align: center;
+  padding: 16px;
+  color: #ccc;
+  font-size: 12px;
+}

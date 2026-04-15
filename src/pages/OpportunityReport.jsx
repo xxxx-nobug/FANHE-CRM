@@ -1,0 +1,144 @@
+import React, { useState, useRef } from 'react';
+import { Card, Button, Spin, Tag } from 'antd';
+import { ArrowLeftOutlined, RiseOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { mockCustomers, mockOpportunities } from '../mock/data';
+import './OpportunityReport.css';
+
+const OpportunityReport = () => {
+  const navigate = useNavigate();
+  const containerRef = useRef(null);
+  const [displayCount, setDisplayCount] = useState(10);
+
+  const customerOpportunityCount = {};
+  
+  customerOpportunityCount[0] = {
+    id: 0,
+    company_name: '尚未建档的客户',
+    count: 0
+  };
+  
+  mockCustomers.forEach(customer => {
+    customerOpportunityCount[customer.id] = {
+      id: customer.id,
+      company_name: customer.company_name,
+      count: 0
+    };
+  });
+  
+  mockOpportunities.forEach(opp => {
+    const customerId = opp.customer_id || 0;
+    if (customerOpportunityCount[customerId]) {
+      customerOpportunityCount[customerId].count++;
+    }
+  });
+
+  const customerOpportunityData = Object.values(customerOpportunityCount)
+    .sort((a, b) => b.count - a.count)
+    .map((item, index) => ({
+      ...item,
+      rank: index + 1
+    }));
+
+  const displayData = customerOpportunityData.slice(0, displayCount);
+
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    
+    const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+    
+    if (scrollHeight - (scrollTop + clientHeight) < 100 && displayCount < customerOpportunityData.length) {
+      setDisplayCount(prev => Math.min(prev + 5, customerOpportunityData.length));
+    }
+  };
+
+  const handleCustomerClick = (customerId) => {
+    if (customerId !== 0) {
+      navigate(`/customers/${customerId}`);
+    }
+  };
+
+  const getRankColor = (rank) => {
+    if (rank === 1) return '#f5222d';
+    if (rank === 2) return '#fa8c16';
+    if (rank === 3) return '#faad14';
+    return '#1890ff';
+  };
+
+  return (
+    <div className="opportunity-report" ref={containerRef} onScroll={handleScroll}>
+      <div className="report-header">
+        <Button 
+          type="text" 
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate('/reports')}
+        >
+          返回
+        </Button>
+        <h2>商机统计报表</h2>
+      </div>
+
+      <div className="report-description">
+        按客户统计商机数量
+      </div>
+
+      {displayData.length > 0 ? (
+        <>
+          {displayData.map(item => (
+            <Card 
+              key={item.id} 
+              className="stat-card" 
+              hoverable
+              onClick={() => handleCustomerClick(item.id)}
+            >
+              <div className="card-header">
+                <div className="rank-badge" style={{ color: getRankColor(item.rank), borderColor: getRankColor(item.rank) }}>
+                  #{item.rank}
+                </div>
+                <div className="customer-info">
+                  <div className={`company-name ${item.id === 0 ? 'no-link' : ''}`}>
+                    {item.company_name}
+                  </div>
+                  {item.id !== 0 && (
+                    <div className="region-text">
+                      <EnvironmentOutlined /> {mockCustomers.find(c => c.id === item.id)?.region || ''}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="stat-row">
+                <div className="stat-item">
+                  <RiseOutlined className="stat-icon" />
+                  <span className="stat-label">商机数</span>
+                  <Tag color={item.count > 0 ? 'blue' : 'default'} className="stat-tag">
+                    {item.count}
+                  </Tag>
+                </div>
+              </div>
+            </Card>
+          ))}
+
+          {displayCount < customerOpportunityData.length && (
+            <div className="loading-more">
+              <Spin size="small" />
+              <span>向下滚动加载更多</span>
+            </div>
+          )}
+
+          {displayCount >= customerOpportunityData.length && customerOpportunityData.length > 10 && (
+            <div className="load-complete">
+              <span>— 已全部加载 —</span>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="empty-state">
+          <p>暂无商机统计数据</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default OpportunityReport;

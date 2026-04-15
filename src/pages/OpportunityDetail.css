@@ -1,0 +1,75 @@
+.opportunity-detail {
+  padding-bottom: 20px;
+}
+
+.detail-card {
+  border-radius: 12px;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.opportunity-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.detail-info {
+  margin-bottom: 24px;
+}
+
+.detail-info .ant-descriptions-item-label {
+  color: #757575;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.detail-info .ant-descriptions-item-content {
+  font-size: 14px;
+  color: #333;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.action-buttons .ant-btn {
+  flex: 1;
+  min-width: 100px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .opportunity-tags {
+    flex-wrap: wrap;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons .ant-btn {
+    width: 100%;
+  }
+}

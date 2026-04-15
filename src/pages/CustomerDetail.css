@@ -1,0 +1,114 @@
+.customer-detail {
+  padding-bottom: 20px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.section-header .ant-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.detail-card {
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.detail-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.location {
+  font-size: 14px;
+  color: #666;
+}
+
+.detail-info .ant-descriptions-item-label {
+  color: #757575;
+  font-size: 13px;
+}
+
+.detail-info .ant-descriptions-item-content {
+  font-size: 14px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.action-buttons .ant-btn {
+  flex: 1;
+  max-width: 120px;
+  white-space: nowrap;
+}
+
+.contact-card {
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.contact-position {
+  font-size: 13px;
+  color: #757575;
+  margin-left: 8px;
+  font-weight: normal;
+}
+
+.empty-card {
+  text-align: center;
+  padding: 30px;
+  border-radius: 8px;
+}
+
+.empty-text {
+  color: #9e9e9e;
+}
+
+.opportunity-card {
+  margin-bottom: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.opp-header {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.opp-description {
+  font-size: 14px;
+  color: #616161;
+  margin-bottom: 8px;
+}
+
+.opp-time {
+  font-size: 12px;
+  color: #9e9e9e;
+}

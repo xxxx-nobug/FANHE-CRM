@@ -1,0 +1,49 @@
+.opportunity-form {
+  padding-bottom: 20px;
+}
+
+.form-card {
+  border-radius: 12px;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.form-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.form-actions .ant-btn {
+  flex: 1;
+}
+
+.form-card .ant-form-item-label > label {
+  font-weight: 500;
+  color: #333;
+}
+
+.form-card .ant-input,
+.form-card .ant-select-selector {
+  border-radius: 8px;
+}
+
+.form-card .ant-input:focus,
+.form-card .ant-input-focused,
+.form-card .ant-select-focused .ant-select-selector {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}

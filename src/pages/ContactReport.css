@@ -1,0 +1,224 @@
+.contact-report {
+  padding-bottom: 20px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.report-card {
+  border-radius: 12px;
+}
+
+.report-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.report-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.report-description {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.group-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: #f6f6f6;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.group-label {
+  margin-right: 16px;
+  font-size: 14px;
+  color: #666;
+}
+
+.groups-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.group-card {
+  border-radius: 12px;
+  border: 1px solid #e8e8e8;
+}
+
+.group-card .ant-card-body {
+  padding: 12px 16px;
+}
+
+.group-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.type-icon {
+  font-size: 18px;
+}
+
+.phone-icon {
+  color: #1890ff;
+}
+
+.email-icon {
+  color: #52c41a;
+}
+
+.contact-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  word-break: break-all;
+  flex: 1;
+}
+
+.contact-item {
+  padding: 8px 4px !important;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.contact-item:hover {
+  background-color: #fafafa;
+}
+
+.contact-item .ant-list-item-meta-avatar {
+  margin-top: 4px;
+}
+
+.contact-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.contact-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.position-tag {
+  font-size: 11px;
+  line-height: 16px;
+  padding: 0 6px;
+  border-radius: 4px;
+}
+
+.contact-desc {
+  margin-top: 4px;
+}
+
+.customer-info {
+  margin-bottom: 4px;
+}
+
+.customer-name {
+  font-size: 13px;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.meta-info {
+  font-size: 11px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 0;
+  color: #999;
+}
+
+.loading-more {
+  text-align: center;
+  padding: 16px;
+  color: #999;
+  font-size: 14px;
+}
+
+.loading-more .ant-spin {
+  margin-right: 8px;
+}
+
+.load-complete {
+  text-align: center;
+  padding: 16px;
+  color: #ccc;
+  font-size: 13px;
+}
+
+.report-action {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .group-stats {
+    gap: 12px;
+  }
+  
+  .group-label {
+    margin-right: 8px;
+  }
+
+  .customer-name {
+    max-width: 150px;
+  }
+  
+  .contact-value {
+    font-size: 13px;
+  }
+}
+
+/* 小屏幕适配 */
+@media (max-width: 480px) {
+  .report-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .customer-name {
+    max-width: 120px;
+  }
+  
+  .contact-value {
+    font-size: 12px;
+  }
+}

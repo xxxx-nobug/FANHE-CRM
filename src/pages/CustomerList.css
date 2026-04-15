@@ -1,0 +1,205 @@
+.customer-list {
+  padding-bottom: 20px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.search-section {
+  margin-bottom: 12px;
+}
+
+.search-input {
+  border-radius: 20px;
+}
+
+.search-input .ant-input {
+  border-radius: 20px;
+}
+
+.filter-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.filter-tag {
+  margin: 0;
+  border-radius: 16px;
+  padding: 4px 12px;
+}
+
+.customer-card {
+  margin-bottom: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  min-width: 300px;
+}
+
+@media (min-width: 768px) {
+  .customer-card {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.customer-card .ant-card-body {
+  padding: 16px;
+}
+
+.card-header {
+  margin-bottom: 8px;
+}
+
+.company-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212121;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.blacklist-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.region-tag {
+  display: inline-block;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.meta-info {
+  display: flex;
+  gap: 16px;
+  color: #757575;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.meta-info span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tags-section {
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.contact-info {
+  margin-bottom: 12px;
+}
+
+.contact-name {
+  font-size: 13px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.contact-position {
+  font-size: 12px;
+  color: #999;
+  margin-left: 4px;
+}
+
+.contact-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.contact-item {
+  font-size: 13px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.action-buttons {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.action-buttons .ant-btn {
+  width: auto !important;
+  min-width: 70px;
+  max-width: 110px;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.pagination-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.loading-more {
+  text-align: center;
+  padding: 16px;
+  color: #999;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.load-complete {
+  text-align: center;
+  padding: 16px;
+  color: #ccc;
+  font-size: 12px;
+}
+
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.floating-add-button {
+  position: fixed;
+  right: 20px;
+  bottom: 80px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 998;
+}
+
+.floating-add-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.5);
+}
+
+.floating-add-button:active {
+  transform: scale(0.95);
+}
