@@ -25,6 +25,46 @@
   font-size: 14px;
   margin-bottom: 16px;
   padding: 0 4px;
+  line-height: 1.6;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.summary-card {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-soft);
+}
+
+.summary-card .ant-card-body {
+  padding: 11px 12px;
+}
+
+.summary-card span {
+  display: block;
+  color: var(--color-muted);
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.summary-card strong {
+  color: var(--color-ink);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.summary-card.primary {
+  background: var(--color-primary-soft);
+  border-color: var(--tag-blue-border);
+}
+
+.summary-card.primary strong {
+  color: var(--color-primary);
 }
 
 .stat-card {
@@ -38,22 +78,27 @@
   padding: 16px;
 }
 
-.card-header {
+.report-list-card .ant-card-body {
+  padding: 14px;
+}
+
+.report-card-main {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
   margin-bottom: 14px;
 }
 
 .rank-badge {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
   border: 1px solid #cfe3f5;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   background: var(--tag-blue-bg);
   color: var(--tag-blue-text);
@@ -88,6 +133,23 @@
   gap: 24px;
   padding-top: 12px;
   border-top: 1px solid var(--color-line-soft);
+}
+
+.metric-block {
+  min-width: 48px;
+  text-align: right;
+}
+
+.metric-block strong {
+  display: block;
+  color: var(--color-primary);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.metric-block span {
+  color: var(--color-soft);
+  font-size: 12px;
 }
 
 .stat-item {

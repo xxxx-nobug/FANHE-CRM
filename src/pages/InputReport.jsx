@@ -42,6 +42,10 @@ const InputReport = () => {
     }));
 
   const displayData = inputReportData.slice(0, displayCount);
+  const totalCustomerInput = inputReportData.reduce((sum, item) => sum + item.customerCount, 0);
+  const totalOpportunityInput = inputReportData.reduce((sum, item) => sum + item.opportunityCount, 0);
+  const activeInputUsers = inputReportData.filter(item => item.customerCount > 0 || item.opportunityCount > 0).length;
+  const topInputUser = inputReportData.find(item => item.customerCount > 0 || item.opportunityCount > 0);
 
   const handleScroll = () => {
     if (!containerRef.current) return;
@@ -74,16 +78,35 @@ const InputReport = () => {
       </div>
 
       <div className="report-description">
-        按录入人统计的客户录入情况
+        关注录入人员的客户与需求沉淀，用于查看基础数据维护情况。
+      </div>
+
+      <div className="summary-grid">
+        <Card className="summary-card primary">
+          <span>客户录入</span>
+          <strong>{totalCustomerInput}</strong>
+        </Card>
+        <Card className="summary-card">
+          <span>需求录入</span>
+          <strong>{totalOpportunityInput}</strong>
+        </Card>
+        <Card className="summary-card">
+          <span>活跃人员</span>
+          <strong>{activeInputUsers}</strong>
+        </Card>
+        <Card className="summary-card">
+          <span>最高录入</span>
+          <strong>{topInputUser?.customerCount || 0}</strong>
+        </Card>
       </div>
 
       {displayData.length > 0 ? (
         <>
           {displayData.map(item => (
-            <Card key={item.id} className="stat-card" hoverable>
-              <div className="card-header">
+            <Card key={item.id} className="stat-card report-list-card" hoverable>
+              <div className="report-card-main">
                 <div className="rank-badge" style={{ color: getRankColor(item.rank), borderColor: getRankColor(item.rank) }}>
-                  #{item.rank}
+                  {item.rank}
                 </div>
                 <div className="user-info">
                   <div className="user-name">
@@ -92,6 +115,10 @@ const InputReport = () => {
                   <div className="user-unit">
                     <BankOutlined /> {item.unit}
                   </div>
+                </div>
+                <div className="metric-block">
+                  <strong>{item.customerCount}</strong>
+                  <span>客户</span>
                 </div>
               </div>
 

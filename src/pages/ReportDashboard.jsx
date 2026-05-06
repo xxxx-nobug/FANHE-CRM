@@ -1,6 +1,15 @@
 import React from 'react';
-import { Card, Table, Tag, Button } from 'antd';
-import { ArrowRightOutlined } from '@ant-design/icons';
+import { Card, Tag } from 'antd';
+import {
+  ArrowRightOutlined,
+  BarChartOutlined,
+  ContactsOutlined,
+  DatabaseOutlined,
+  FileSearchOutlined,
+  RiseOutlined,
+  TeamOutlined,
+  UserSwitchOutlined
+} from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockCustomers, mockOpportunities, mockUsers } from '../mock/data';
 import './ReportDashboard.css';
@@ -8,217 +17,226 @@ import './ReportDashboard.css';
 const ReportDashboard = () => {
   const navigate = useNavigate();
 
-  // 1. 需求统计 - 按客户统计需求数量
   const customerOpportunityCount = {};
   mockCustomers.forEach(customer => {
     customerOpportunityCount[customer.id] = {
+      id: customer.id,
       company_name: customer.company_name,
       count: 0
     };
   });
 
-  mockOpportunities.forEach(opp => {
-    if (opp.customer_id && customerOpportunityCount[opp.customer_id]) {
-      customerOpportunityCount[opp.customer_id].count++;
+  mockOpportunities.forEach(opportunity => {
+    if (opportunity.customer_id && customerOpportunityCount[opportunity.customer_id]) {
+      customerOpportunityCount[opportunity.customer_id].count += 1;
     }
   });
 
-  const customerOpportunityData = Object.values(customerOpportunityCount)
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+  const opportunityRanking = Object.values(customerOpportunityCount)
+    .filter(item => item.count > 0)
+    .sort((a, b) => b.count - a.count);
 
-  const customerColumns = [
-    {
-      title: '客户名称',
-      dataIndex: 'company_name',
-      key: 'company_name',
-    },
-    {
-      title: '需求数量',
-      dataIndex: 'count',
-      key: 'count',
-      render: (count) => <Tag color={count > 0 ? 'blue' : 'default'}>{count}</Tag>
-    }
-  ];
-
-  // 2. 录入统计 - 按录入人统计客户录入情况
-  const inputCount = {};
+  const inputStats = {};
   mockUsers.forEach(user => {
-    inputCount[user.id] = {
+    inputStats[user.id] = {
+      id: user.id,
       username: user.username,
       unit: user.unit,
-      count: 0
+      customerCount: 0,
+      opportunityCount: 0
     };
   });
 
   mockCustomers.forEach(customer => {
-    if (customer.created_by && inputCount[customer.created_by]) {
-      inputCount[customer.created_by].count++;
+    if (customer.created_by && inputStats[customer.created_by]) {
+      inputStats[customer.created_by].customerCount += 1;
     }
   });
 
-  const inputReportData = Object.values(inputCount)
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
-
-  const inputColumns = [
-    {
-      title: '录入人',
-      dataIndex: 'username',
-      key: 'username',
-    },
-    {
-      title: '单位',
-      dataIndex: 'unit',
-      key: 'unit',
-    },
-    {
-      title: '录入数量',
-      dataIndex: 'count',
-      key: 'count',
-      render: (count) => <Tag color={count > 0 ? 'green' : 'default'}>{count}</Tag>
+  mockOpportunities.forEach(opportunity => {
+    if (opportunity.created_by && inputStats[opportunity.created_by]) {
+      inputStats[opportunity.created_by].opportunityCount += 1;
     }
-  ];
+  });
 
-  // 3. 相同联系方式分析 - 查找有相同电话或邮箱的联系人
+  const inputRanking = Object.values(inputStats)
+    .sort((a, b) => (b.customerCount + b.opportunityCount) - (a.customerCount + a.opportunityCount));
+
   const contactMap = {};
   mockCustomers.forEach(customer => {
-    if (customer.contacts) {
-      customer.contacts.forEach(contact => {
-        if (contact.phone) {
-          if (!contactMap[contact.phone]) {
-            contactMap[contact.phone] = [];
-          }
-          contactMap[contact.phone].push({
-            customer: customer.company_name,
-            name: contact.name,
-            contactType: '电话',
-            value: contact.phone
-          });
+    customer.contacts?.forEach(contact => {
+      [
+        { type: '电话', value: contact.phone },
+        { type: '邮箱', value: contact.email }
+      ].forEach(item => {
+        if (!item.value) return;
+        if (!contactMap[item.value]) {
+          contactMap[item.value] = {
+            type: item.type,
+            value: item.value,
+            contacts: []
+          };
         }
-        if (contact.email) {
-          if (!contactMap[contact.email]) {
-            contactMap[contact.email] = [];
-          }
-          contactMap[contact.email].push({
-            customer: customer.company_name,
-            name: contact.name,
-            contactType: '邮箱',
-            value: contact.email
-          });
-        }
+        contactMap[item.value].contacts.push({
+          customer_name: customer.company_name,
+          contact_name: contact.name
+        });
       });
-    }
+    });
   });
 
   const duplicateContacts = Object.values(contactMap)
-    .filter(contacts => contacts.length > 1)
-    .map((contacts, index) => ({
-      key: index,
-      contactType: contacts[0].contactType,
-      value: contacts[0].value,
-      count: contacts.length,
-      contacts: contacts.map(c => `${c.customer} - ${c.name}`).join('; ')
-    }))
-    .slice(0, 5);
+    .filter(item => item.contacts.length > 1)
+    .sort((a, b) => b.contacts.length - a.contacts.length);
 
-  const duplicateColumns = [
+  const totalInputCount = mockCustomers.length + mockOpportunities.length;
+  const activeInputUsers = inputRanking.filter(item => item.customerCount > 0 || item.opportunityCount > 0).length;
+
+  const insightCards = [
     {
-      title: '联系方式类型',
-      dataIndex: 'contactType',
-      key: 'contactType',
+      key: 'opportunity',
+      title: '需求统计',
+      desc: '查看客户需求沉淀和重点客户排行',
+      value: mockOpportunities.length,
+      unit: '条需求',
+      icon: <RiseOutlined />,
+      tag: '客户维度',
+      path: '/reports/opportunity'
     },
     {
-      title: '联系方式',
-      dataIndex: 'value',
-      key: 'value',
+      key: 'input',
+      title: '录入统计',
+      desc: '查看人员录入贡献和基础数据维护情况',
+      value: totalInputCount,
+      unit: '条录入',
+      icon: <DatabaseOutlined />,
+      tag: '人员维度',
+      path: '/reports/input'
     },
     {
-      title: '重复数量',
-      dataIndex: 'count',
-      key: 'count',
-      render: (count) => <Tag color="red">{count}</Tag>
-    },
-    {
-      title: '涉及客户',
-      dataIndex: 'contacts',
-      key: 'contacts',
+      key: 'contact',
+      title: '相同联系方式分析',
+      desc: '排查重复电话、邮箱和客户归属风险',
+      value: duplicateContacts.length,
+      unit: '组重复',
+      icon: <ContactsOutlined />,
+      tag: '数据质量',
+      path: '/reports/contact'
     }
   ];
 
   return (
     <div className="report-dashboard">
-      {/* 1. 需求统计 */}
-      <Card className="report-card" title="需求统计">
-        <div className="report-description">
-          查看按客户统计的需求数量
+      <section className="report-overview">
+        <div>
+          <h2>统计工作台</h2>
+          <p>按管理场景查看客户、需求和数据质量情况</p>
         </div>
-        <Table
-          dataSource={customerOpportunityData}
-          columns={customerColumns}
-          pagination={false}
-          size="small"
-          rowKey="company_name"
-          className="report-table"
-        />
-        <div className="report-action">
-          <Button
-            type="primary"
-            icon={<ArrowRightOutlined />}
-            onClick={() => navigate('/reports/opportunity')}
-          >
-            查看统计
-          </Button>
-        </div>
-      </Card>
+        <BarChartOutlined />
+      </section>
 
-      {/* 2. 录入统计 */}
-      <Card className="report-card" title="录入统计">
-        <div className="report-description">
-          查看按录入人统计的客户录入情况
-        </div>
-        <Table
-          dataSource={inputReportData}
-          columns={inputColumns}
-          pagination={false}
-          size="small"
-          rowKey="username"
-          className="report-table"
-        />
-        <div className="report-action">
-          <Button
-            type="primary"
-            icon={<ArrowRightOutlined />}
-            onClick={() => navigate('/reports/input')}
-          >
-            查看统计
-          </Button>
-        </div>
-      </Card>
+      <section className="report-summary-grid">
+        <Card className="report-summary-card primary">
+          <span>客户总数</span>
+          <strong>{mockCustomers.length}</strong>
+        </Card>
+        <Card className="report-summary-card">
+          <span>需求总数</span>
+          <strong>{mockOpportunities.length}</strong>
+        </Card>
+        <Card className="report-summary-card">
+          <span>活跃录入</span>
+          <strong>{activeInputUsers}</strong>
+        </Card>
+        <Card className="report-summary-card">
+          <span>重复组数</span>
+          <strong>{duplicateContacts.length}</strong>
+        </Card>
+      </section>
 
-      {/* 3. 相同联系方式分析 */}
-      <Card className="report-card" title="相同联系方式分析">
-        <div className="report-description">
-          查找有相同电话或邮箱的联系人
-        </div>
-        <Table
-          dataSource={duplicateContacts}
-          columns={duplicateColumns}
-          pagination={false}
-          size="small"
-          rowKey="key"
-          className="report-table"
-        />
-        <div className="report-action">
-          <Button
-            type="primary"
-            icon={<ArrowRightOutlined />}
-            onClick={() => navigate('/reports/contact')}
+      <section className="report-module-list">
+        {insightCards.map(item => (
+          <button
+            key={item.key}
+            type="button"
+            className="report-module-card"
+            onClick={() => navigate(item.path)}
           >
-            查看统计
-          </Button>
+            <span className="module-icon">{item.icon}</span>
+            <span className="module-main">
+              <span className="module-title-row">
+                <strong>{item.title}</strong>
+                <Tag color="blue">{item.tag}</Tag>
+              </span>
+              <span className="module-desc">{item.desc}</span>
+            </span>
+            <span className="module-metric">
+              <strong>{item.value}</strong>
+              <em>{item.unit}</em>
+            </span>
+            <ArrowRightOutlined className="module-arrow" />
+          </button>
+        ))}
+      </section>
+
+      <section className="report-preview-section">
+        <div className="preview-header">
+          <div>
+            <h3>重点关注</h3>
+            <p>展示当前最需要被查看的统计线索</p>
+          </div>
         </div>
-      </Card>
+
+        <div className="preview-list">
+          {opportunityRanking.slice(0, 2).map(item => (
+            <button
+              key={item.id}
+              type="button"
+              className="preview-row"
+              onClick={() => navigate('/reports/opportunity')}
+            >
+              <TeamOutlined />
+              <span>
+                <strong>{item.company_name}</strong>
+                <em>需求数量较多，建议持续跟进</em>
+              </span>
+              <Tag color="blue">{item.count} 条</Tag>
+            </button>
+          ))}
+
+          {inputRanking.slice(0, 1).map(item => (
+            <button
+              key={item.id}
+              type="button"
+              className="preview-row"
+              onClick={() => navigate('/reports/input')}
+            >
+              <UserSwitchOutlined />
+              <span>
+                <strong>{item.username}</strong>
+                <em>{item.unit}，当前录入活跃度最高</em>
+              </span>
+              <Tag color="green">{item.customerCount + item.opportunityCount} 条</Tag>
+            </button>
+          ))}
+
+          {duplicateContacts.slice(0, 1).map(item => (
+            <button
+              key={item.value}
+              type="button"
+              className="preview-row"
+              onClick={() => navigate('/reports/contact')}
+            >
+              <FileSearchOutlined />
+              <span>
+                <strong>{item.value}</strong>
+                <em>{item.type} 被多个联系人使用，建议核对</em>
+              </span>
+              <Tag color="red">{item.contacts.length} 人</Tag>
+            </button>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

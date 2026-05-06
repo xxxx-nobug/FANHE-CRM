@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Card, Button, Spin, Tag } from 'antd';
-import { ArrowLeftOutlined, RiseOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, EnvironmentOutlined, BarChartOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockCustomers, mockOpportunities } from '../mock/data';
 import { getCustomerLocationLabel } from '../constants/customerDictionaries';
@@ -42,6 +42,10 @@ const OpportunityReport = () => {
     }));
 
   const displayData = customerOpportunityData.slice(0, displayCount);
+  const totalOpportunityCount = mockOpportunities.length;
+  const customerWithOpportunityCount = customerOpportunityData.filter(item => item.id !== 0 && item.count > 0).length;
+  const unfiledOpportunityCount = customerOpportunityData.find(item => item.id === 0)?.count || 0;
+  const topCustomer = customerOpportunityData.find(item => item.id !== 0 && item.count > 0);
 
   const handleScroll = () => {
     if (!containerRef.current) return;
@@ -80,7 +84,26 @@ const OpportunityReport = () => {
       </div>
 
       <div className="report-description">
-        按客户统计需求数量
+        聚焦客户维度的需求沉淀情况，用于判断哪些客户需要优先维护。
+      </div>
+
+      <div className="summary-grid">
+        <Card className="summary-card primary">
+          <span>需求总数</span>
+          <strong>{totalOpportunityCount}</strong>
+        </Card>
+        <Card className="summary-card">
+          <span>有需求客户</span>
+          <strong>{customerWithOpportunityCount}</strong>
+        </Card>
+        <Card className="summary-card">
+          <span>未建档需求</span>
+          <strong>{unfiledOpportunityCount}</strong>
+        </Card>
+        <Card className="summary-card">
+          <span>最高客户</span>
+          <strong>{topCustomer?.count || 0}</strong>
+        </Card>
       </div>
 
       {displayData.length > 0 ? (
@@ -88,13 +111,13 @@ const OpportunityReport = () => {
           {displayData.map(item => (
             <Card 
               key={item.id} 
-              className="stat-card" 
+              className="stat-card report-list-card" 
               hoverable
               onClick={() => handleCustomerClick(item.id)}
             >
-              <div className="card-header">
+              <div className="report-card-main">
                 <div className="rank-badge" style={{ color: getRankColor(item.rank), borderColor: getRankColor(item.rank) }}>
-                  #{item.rank}
+                  {item.rank}
                 </div>
                 <div className="customer-info">
                   <div className={`company-name ${item.id === 0 ? 'no-link' : ''}`}>
@@ -106,16 +129,17 @@ const OpportunityReport = () => {
                     </div>
                   )}
                 </div>
+                <div className="metric-block">
+                  <strong>{item.count}</strong>
+                  <span>需求</span>
+                </div>
               </div>
 
-              <div className="stat-row">
-                <div className="stat-item">
-                  <RiseOutlined className="stat-icon" />
-                  <span className="stat-label">需求数</span>
-                  <Tag color={item.count > 0 ? 'blue' : 'default'} className="stat-tag">
-                    {item.count}
-                  </Tag>
-                </div>
+              <div className="report-card-footer">
+                <span><BarChartOutlined /> 客户需求排行</span>
+                <Tag color={item.count > 0 ? 'blue' : 'default'} className="stat-tag">
+                  {item.count > 0 ? '有需求' : '暂无需求'}
+                </Tag>
               </div>
             </Card>
           ))}
