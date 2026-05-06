@@ -14,15 +14,17 @@ import OpportunityReport from './pages/OpportunityReport';
 import InputReport from './pages/InputReport';
 import ContactReport from './pages/ContactReport';
 import MyPage from './pages/MyPage';
+import NotificationCenter from './pages/NotificationCenter';
 import UserManagement from './pages/UserManagement';
 import CreateUser from './pages/CreateUser';
 import Login from './pages/Login';
-import { mockCustomers } from './mock/data';
+import { mockCustomers, mockNotifications } from './mock/data';
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
   const [customers, setCustomers] = useState(mockCustomers);
+  const [notifications, setNotifications] = useState(mockNotifications);
 
   const handleLogin = (userData) => {
     setUser(userData);
@@ -51,18 +53,19 @@ function App() {
                   <Routes>
                     <Route path="/" element={<Navigate to="/customers" replace />} />
                     <Route path="/customers" element={<CustomerList user={user} customers={customers} setCustomers={setCustomers} />} />
-                    <Route path="/customers/create" element={<CustomerForm customers={customers} />} />
+                    <Route path="/customers/create" element={<CustomerForm user={user} customers={customers} setCustomers={setCustomers} setNotifications={setNotifications} />} />
                     <Route path="/customers/:id" element={<CustomerDetail user={user} customers={customers} />} />
-                    <Route path="/customers/:id/edit" element={<CustomerForm customers={customers} />} />
-                    <Route path="/opportunities" element={<OpportunityList />} />
-                    <Route path="/opportunities/:id" element={<OpportunityDetail />} />
+                    <Route path="/customers/:id/edit" element={<CustomerForm user={user} customers={customers} setCustomers={setCustomers} setNotifications={setNotifications} />} />
+                    <Route path="/opportunities" element={<OpportunityList user={user} />} />
+                    <Route path="/opportunities/:id" element={<OpportunityDetail user={user} />} />
                     <Route path="/opportunities/create" element={<OpportunityForm />} />
                     <Route path="/opportunities/:id/edit" element={<OpportunityForm />} />
                     <Route path="/reports" element={<ReportDashboard />} />
                     <Route path="/reports/opportunity" element={<OpportunityReport />} />
                     <Route path="/reports/input" element={<InputReport />} />
                     <Route path="/reports/contact" element={<ContactReport />} />
-                    <Route path="/my" element={<MyPage user={user} onLogout={handleLogout} />} />
+                    <Route path="/my" element={<MyPage user={user} notifications={notifications} onLogout={handleLogout} />} />
+                    <Route path="/notifications" element={<NotificationCenter user={user} notifications={notifications} setNotifications={setNotifications} />} />
                     <Route path="/users" element={<UserManagement />} />
                     <Route path="/create-user" element={<CreateUser />} />
                   </Routes>

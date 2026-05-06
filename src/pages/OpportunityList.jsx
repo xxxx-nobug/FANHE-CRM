@@ -9,8 +9,9 @@ import './OpportunityList.css';
 const { Search } = Input;
 const OPPORTUNITY_SEARCH_HISTORY_KEY = 'crm_opportunity_search_history';
 
-const OpportunityList = () => {
+const OpportunityList = ({ user }) => {
   const navigate = useNavigate();
+  const canDelete = user?.role === 'admin';
   const [searchText, setSearchText] = useState('');
   const [searchHistory, setSearchHistory] = useState(() => getSearchHistory(OPPORTUNITY_SEARCH_HISTORY_KEY));
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
@@ -120,14 +121,16 @@ const OpportunityList = () => {
                     >
                       编辑
                     </Button>
-                    <Button 
-                      type="link" 
-                      size="small"
-                      icon={<DeleteOutlined />}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      删除
-                    </Button>
+                    {canDelete && (
+                      <Button 
+                        type="link" 
+                        size="small"
+                        icon={<DeleteOutlined />}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        删除
+                      </Button>
+                    )}
                   </div>
                 </div>
                 

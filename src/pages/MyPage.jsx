@@ -1,22 +1,39 @@
 import React, { useState } from 'react';
-import { Card, Avatar, List, Button, Tag, Divider, Modal, message, Form, Input } from 'antd';
+import { Card, Avatar, List, Button, Tag, Divider, Modal, message, Form, Input, Badge } from 'antd';
 import { 
   UserOutlined, 
   TeamOutlined, 
   UserAddOutlined, 
   LogoutOutlined,
-  KeyOutlined
+  KeyOutlined,
+  BellOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { mockUsers } from '../mock/data';
 import './MyPage.css';
 
-const MyPage = ({ user, onLogout }) => {
+const isNotificationVisible = (notification, user) => {
+  if (!user) return false;
+  const targetRoles = notification.target_roles || [];
+  const targetUserIds = notification.target_user_ids || [];
+  return targetRoles.includes(user.role) || targetUserIds.includes(user.id);
+};
+
+const MyPage = ({ user, notifications = [], onLogout }) => {
   const navigate = useNavigate();
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [passwordForm] = Form.useForm();
+  const unreadCount = notifications.filter(notification => (
+    isNotificationVisible(notification, user) && !(notification.read_by || []).includes(user?.id)
+  )).length;
 
   const menuItems = [
+    {
+      icon: <BellOutlined />,
+      title: '通知消息',
+      description: unreadCount > 0 ? `${unreadCount} 条未读通知` : '查看历史通知',
+      onClick: () => navigate('/notifications'),
+      badge: unreadCount
+    },
     {
       icon: <KeyOutlined />,
       title: '修改密码',
@@ -114,6 +131,9 @@ const MyPage = ({ user, onLogout }) => {
                     <div className="menu-title">{item.title}</div>
                     <div className="menu-description">{item.description}</div>
                   </div>
+                  {item.badge > 0 && (
+                    <Badge count={item.badge} size="small" />
+                  )}
                 </List.Item>
               )}
             />

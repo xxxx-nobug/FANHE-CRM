@@ -20,6 +20,7 @@ const CUSTOMER_SEARCH_HISTORY_KEY = 'crm_customer_search_history';
 
 const CustomerList = ({ user, customers, setCustomers }) => {
   const navigate = useNavigate();
+  const canDelete = user?.role === 'admin';
   const [searchText, setSearchText] = useState('');
   const [selectedLocation, setSelectedLocation] = useState([]);
   const [selectedIndustry, setSelectedIndustry] = useState([]);
@@ -312,15 +313,17 @@ const CustomerList = ({ user, customers, setCustomers }) => {
                 >
                   添加需求
                 </Button>
-                <Button 
-                  type="default" 
-                  size="small" 
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={(e) => handleDeleteClick(e, customer)}
-                >
-                  删除
-                </Button>
+                {canDelete && (
+                  <Button 
+                    type="default" 
+                    size="small" 
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={(e) => handleDeleteClick(e, customer)}
+                  >
+                    删除
+                  </Button>
+                )}
               </div>
             </Card>
           ))}

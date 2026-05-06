@@ -16,7 +16,7 @@ import './CustomerForm.css';
 
 const { TextArea } = Input;
 
-const CustomerForm = ({ customers = [] }) => {
+const CustomerForm = ({ user, customers = [], setCustomers, setNotifications }) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -46,7 +46,21 @@ const CustomerForm = ({ customers = [] }) => {
         });
       }
     }
-  }, [customerId, form, isEdit]);
+  }, [customerId, customers, form, isEdit]);
+
+  const createAdminNotification = (customer) => ({
+    id: Date.now(),
+    type: 'customer_created',
+    title: '新客户录入',
+    content: `录入员 ${user?.username || '未知用户'} 新增客户「${customer.company_name}」，请管理员关注客户资料完整性。`,
+    customer_id: customer.id,
+    customer_name: customer.company_name,
+    actor_id: user?.id,
+    actor_name: user?.username || '未知用户',
+    target_roles: ['admin'],
+    read_by: [],
+    created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+  });
 
   const onFinish = (values) => {
     setLoading(true);
@@ -58,19 +72,36 @@ const CustomerForm = ({ customers = [] }) => {
       const isForeign = locationLevel1 === FOREIGN_LOCATION_VALUE;
       const customerData = {
         ...values,
+        id: isEdit ? parseInt(customerId) : Math.max(...customers.map(customer => customer.id), 0) + 1,
         region: isForeign ? FOREIGN_LOCATION_VALUE : null,
         province: isForeign ? null : locationLevel1,
         city: isForeign ? null : locationLevel2,
         country: isForeign ? locationLevel2 : null,
         industry_tags: industryTags,
         tags,
-        created_at: new Date().toISOString(),
+        contacts: isEdit ? customers.find(customer => customer.id === parseInt(customerId))?.contacts || [] : [],
+        opportunities: isEdit ? customers.find(customer => customer.id === parseInt(customerId))?.opportunities || [] : [],
+        background_notes: isEdit ? customers.find(customer => customer.id === parseInt(customerId))?.background_notes || [] : [],
+        created_by: isEdit ? customers.find(customer => customer.id === parseInt(customerId))?.created_by : user?.id,
+        created_at: isEdit ? customers.find(customer => customer.id === parseInt(customerId))?.created_at : new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
       delete customerData.location_path;
       delete customerData.industry_paths;
       
-      console.log('Customer data:', customerData);
+      if (setCustomers) {
+        if (isEdit) {
+          setCustomers(prevCustomers => prevCustomers.map(customer => (
+            customer.id === parseInt(customerId) ? customerData : customer
+          )));
+        } else {
+          setCustomers(prevCustomers => [customerData, ...prevCustomers]);
+          if (user?.role === 'entry' && setNotifications) {
+            setNotifications(prevNotifications => [createAdminNotification(customerData), ...prevNotifications]);
+          }
+        }
+      }
+
       message.success(isEdit ? '客户信息更新成功' : '客户创建成功');
       setLoading(false);
       navigate('/customers');

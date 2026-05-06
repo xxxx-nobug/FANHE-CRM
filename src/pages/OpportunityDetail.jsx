@@ -5,9 +5,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { mockOpportunities, mockUsers } from '../mock/data';
 import './OpportunityDetail.css';
 
-const OpportunityDetail = () => {
+const OpportunityDetail = ({ user }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const canDelete = user?.role === 'admin';
   const [opportunity, setOpportunity] = useState(mockOpportunities.find(opp => opp.id === parseInt(id)));
 
   const getUserName = (userId) => {
@@ -72,13 +73,15 @@ const OpportunityDetail = () => {
           >
             编辑
           </Button>
-          <Button 
-            type="default" 
-            danger
-            icon={<DeleteOutlined />}
-          >
-            删除
-          </Button>
+          {canDelete && (
+            <Button 
+              type="default" 
+              danger
+              icon={<DeleteOutlined />}
+            >
+              删除
+            </Button>
+          )}
         </div>
       </Card>
     </div>

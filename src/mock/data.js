@@ -595,6 +595,44 @@ export const mockUrgentCustomers = [
   }
 ]
 
+export const mockNotifications = [
+  {
+    id: 1,
+    type: 'customer_created',
+    title: '新客户录入',
+    content: '录入员 zhangsan 新增客户「上海贸易有限公司」，请管理员关注客户资料完整性。',
+    customer_id: 2,
+    customer_name: '上海贸易有限公司',
+    actor_id: 2,
+    actor_name: 'zhangsan',
+    target_roles: ['admin'],
+    read_by: [],
+    created_at: '2026-04-14 10:18:00'
+  },
+  {
+    id: 2,
+    type: 'customer_created',
+    title: '新客户录入',
+    content: '录入员 lisi 新增客户「演示科技有限公司」。',
+    customer_id: 12,
+    customer_name: '演示科技有限公司',
+    actor_id: 3,
+    actor_name: 'lisi',
+    target_roles: ['admin'],
+    read_by: [1],
+    created_at: '2026-04-14 12:08:00'
+  },
+  {
+    id: 3,
+    type: 'system',
+    title: '客户模板更新',
+    content: '客户批量导入模板已增加省市/国家标签和航运行业标签字段。',
+    target_roles: ['admin', 'entry'],
+    read_by: [],
+    created_at: '2026-04-15 09:30:00'
+  }
+]
+
 export const mockCurrentUser = {
   id: 1,
   username: 'admin',
