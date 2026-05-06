@@ -3,7 +3,9 @@
 }
 
 .detail-card {
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-card);
 }
 
 .detail-header {
@@ -12,13 +14,14 @@
   gap: 16px;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-line-soft);
 }
 
 .detail-header h2 {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
+  color: var(--color-ink);
 }
 
 .opportunity-tags {
@@ -32,14 +35,14 @@
 }
 
 .detail-info .ant-descriptions-item-label {
-  color: #757575;
+  color: var(--color-soft);
   font-size: 13px;
   font-weight: 600;
 }
 
 .detail-info .ant-descriptions-item-content {
   font-size: 14px;
-  color: #333;
+  color: var(--color-text);
 }
 
 .action-buttons {
@@ -51,6 +54,85 @@
 .action-buttons .ant-btn {
   flex: 1;
   min-width: 100px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0 12px;
+  padding: 0 8px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.section-header .ant-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.follow-note-card {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-soft);
+}
+
+.follow-note-card .ant-card-body {
+  padding: 14px;
+}
+
+.follow-note-item {
+  padding: 12px 0 !important;
+}
+
+.follow-note-item:first-child {
+  padding-top: 0 !important;
+}
+
+.follow-note-item:last-child {
+  padding-bottom: 0 !important;
+}
+
+.follow-note-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.follow-note-author {
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.follow-note-time {
+  color: var(--color-soft);
+  font-size: 12px;
+}
+
+.mention-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 4px 0 6px;
+}
+
+.follow-note-content {
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.follow-note-empty {
+  text-align: center;
+  padding: 18px 0;
 }
 
 /* 响应式设计 */
@@ -71,5 +153,9 @@
   
   .action-buttons .ant-btn {
     width: 100%;
+  }
+
+  .section-header {
+    padding: 0 2px;
   }
 }

@@ -111,10 +111,10 @@ const HomePage = ({ user, customers = [], notifications = [] }) => {
       <section className="home-hero">
         <div className="hero-topbar">
           <div className="brand-block">
-            <div className="brand-mark"><CompassOutlined /></div>
+            <div className="brand-mark">泛</div>
             <div>
               <h1>泛和客商平台</h1>
-              <p>船运行业客户管理</p>
+              <p>航运客户管理工作台</p>
             </div>
           </div>
         </div>
@@ -193,8 +193,8 @@ const HomePage = ({ user, customers = [], notifications = [] }) => {
               <Progress
                 percent={Math.round((item.count / largestIndustryCount) * 100)}
                 showInfo={false}
-                strokeColor={['#2563eb', '#14b8a6', '#8b5cf6', '#f97316', '#0ea5e9'][index] || '#2563eb'}
-                trailColor="#edf1f7"
+                strokeColor="#2f6fa8"
+                trailColor="#e8f1f8"
               />
               <span className="industry-count">{item.count}</span>
             </button>

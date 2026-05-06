@@ -101,9 +101,9 @@ const ContactReport = () => {
         </div>
 
         <div className="group-stats">
-          <Badge count={duplicatePhoneGroups.length} style={{ backgroundColor: '#1890ff' }} />
+          <Badge count={duplicatePhoneGroups.length} style={{ backgroundColor: '#2f6fa8' }} />
           <span className="group-label">相同电话号码组</span>
-          <Badge count={duplicateEmailGroups.length} style={{ backgroundColor: '#52c41a' }} />
+          <Badge count={duplicateEmailGroups.length} style={{ backgroundColor: '#16816d' }} />
           <span className="group-label">相同邮箱地址组</span>
         </div>
 
@@ -119,7 +119,7 @@ const ContactReport = () => {
                 <span className="contact-value">{group.value}</span>
                 <Badge 
                   count={group.count} 
-                  style={{ backgroundColor: group.type === 'phone' ? '#1890ff' : '#52c41a' }} 
+                  style={{ backgroundColor: group.type === 'phone' ? '#2f6fa8' : '#16816d' }} 
                 />
               </div>
 

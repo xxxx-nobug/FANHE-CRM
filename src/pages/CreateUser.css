@@ -3,7 +3,9 @@
 }
 
 .form-card {
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-card);
   max-width: 500px;
   margin: 0 auto;
 }
@@ -14,13 +16,14 @@
   gap: 16px;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-line-soft);
 }
 
 .form-header h2 {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
+  color: var(--color-ink);
 }
 
 .form-actions {
@@ -29,7 +32,7 @@
   justify-content: space-between;
   margin-top: 24px;
   padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--color-line-soft);
 }
 
 .form-actions .ant-btn {

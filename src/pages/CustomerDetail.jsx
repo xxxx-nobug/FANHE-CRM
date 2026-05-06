@@ -121,6 +121,10 @@ const CustomerDetail = ({ user, customers }) => {
     return <div>客户不存在</div>;
   }
 
+  const uniqueOpportunities = Array.from(
+    new Map((customer.opportunities || []).map(opportunity => [opportunity.id, opportunity])).values()
+  );
+
   return (
     <div className="customer-detail">
       <Card className="detail-card">
@@ -278,12 +282,12 @@ const CustomerDetail = ({ user, customers }) => {
 
       <div className="section-header">
         <div className="section-title">
-          需求 ({customer.opportunities?.length || 0})
+          需求 ({uniqueOpportunities.length})
         </div>
       </div>
 
-      {customer.opportunities && customer.opportunities.length > 0 ? (
-        customer.opportunities.map(opp => {
+      {uniqueOpportunities.length > 0 ? (
+        uniqueOpportunities.map(opp => {
           return (
             <Card 
               key={opp.id} 

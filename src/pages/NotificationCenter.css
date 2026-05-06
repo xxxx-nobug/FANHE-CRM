@@ -5,8 +5,10 @@
 .notification-header-card,
 .notification-card,
 .notification-empty-card {
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   margin-bottom: 12px;
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-soft);
 }
 
 .notification-header {
@@ -20,11 +22,11 @@
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-ink);
 }
 
 .notification-title span {
-  color: #999;
+  color: var(--color-soft);
   font-size: 12px;
 }
 
@@ -33,7 +35,7 @@
 }
 
 .notification-card.unread {
-  border-left-color: #1890ff;
+  border-left-color: var(--color-primary);
 }
 
 .notification-card .ant-card-body {
@@ -46,11 +48,11 @@
 }
 
 .notification-avatar {
-  background: #bfbfbf;
+  background: #a6b8c8;
 }
 
 .notification-avatar.unread {
-  background: #1890ff;
+  background: var(--color-primary);
 }
 
 .notification-item-title {
@@ -68,7 +70,7 @@
 }
 
 .notification-content {
-  color: #424242;
+  color: var(--color-text);
   line-height: 1.6;
   margin-top: 6px;
   word-break: break-word;
@@ -78,7 +80,7 @@
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  color: #9e9e9e;
+  color: var(--color-soft);
   font-size: 12px;
   margin-top: 8px;
   flex-wrap: wrap;
@@ -88,11 +90,11 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ff4d4f;
+  background: var(--color-danger);
   flex-shrink: 0;
 }
 
 .read-icon {
-  color: #bfbfbf;
+  color: #a6b8c8;
   font-size: 14px;
 }

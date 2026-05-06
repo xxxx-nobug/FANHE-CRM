@@ -36,7 +36,47 @@ function App() {
   };
 
   return (
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider
+      locale={zhCN}
+      theme={{
+        token: {
+          colorPrimary: '#2F6FA8',
+          colorSuccess: '#18A085',
+          colorWarning: '#D48925',
+          colorError: '#D85C55',
+          colorText: '#1F2A3D',
+          colorTextSecondary: '#667085',
+          colorBorder: '#DCE7F2',
+          colorBgLayout: '#F6FAFD',
+          colorBgContainer: '#FFFFFF',
+          borderRadius: 8,
+          boxShadow: '0 8px 22px rgba(47, 111, 168, 0.08)',
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        },
+        components: {
+          Card: {
+            borderRadiusLG: 10,
+            paddingLG: 16
+          },
+          Button: {
+            borderRadius: 8,
+            controlHeight: 36,
+            fontWeight: 600
+          },
+          Input: {
+            borderRadius: 8,
+            controlHeight: 38
+          },
+          Select: {
+            borderRadius: 8,
+            controlHeight: 38
+          },
+          Tag: {
+            borderRadiusSM: 6
+          }
+        }
+      }}
+    >
       <Router>
         <Routes>
           <Route 

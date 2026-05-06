@@ -1,6 +1,6 @@
 .main-layout {
   min-height: 100vh;
-  background: var(--color-bg);
+  background: #f5f5f5;
 }
 
 .main-header {
@@ -11,8 +11,8 @@
   left: 0;
   right: 0;
   z-index: 999;
-  box-shadow: none;
-  border-bottom: 1px solid var(--color-line);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .header-content {
@@ -23,10 +23,9 @@
 }
 
 .header-title {
-  color: var(--color-ink);
+  color: #1890ff;
   font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0;
+  font-weight: 600;
 }
 
 .main-content {

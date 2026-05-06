@@ -3,7 +3,9 @@
 }
 
 .form-card {
-  border-radius: 12px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-card);
 }
 
 .form-header {
@@ -12,13 +14,14 @@
   gap: 16px;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-line-soft);
 }
 
 .form-header h2 {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
+  color: var(--color-ink);
 }
 
 .form-actions {
@@ -33,14 +36,14 @@
 
 .form-card .ant-form-item-label > label {
   font-weight: 500;
-  color: #333;
+  color: var(--color-text);
 }
 
 .form-card .ant-input,
 .form-card .ant-select-selector,
 .form-card .ant-input-number,
 .form-card .ant-cascader .ant-select-selector {
-  border-radius: 8px;
+  border-radius: var(--radius-control);
 }
 
 .form-card .ant-input:focus,
@@ -49,6 +52,6 @@
 .form-card .ant-cascader-focused .ant-select-selector,
 .form-card .ant-input-number:focus,
 .form-card .ant-input-number-focused {
-  border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(47, 111, 168, 0.12);
 }

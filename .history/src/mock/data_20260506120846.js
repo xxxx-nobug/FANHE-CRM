@@ -417,16 +417,6 @@ export const mockOpportunities = [
     updated_at: '2024-01-16 14:20:00',
     created_by: 1,
     updated_by: 1,
-    follow_notes: [
-      {
-        id: 1,
-        content: '客户希望先确认船期协同和报价流程能否统一到一个入口，建议下次沟通带上方案示意。',
-        mention_user_ids: [2, 4],
-        created_by: 1,
-        created_by_name: 'admin',
-        created_at: '2024-01-17 09:30:00'
-      }
-    ],
     customer: {
       id: 1,
       company_name: '北京科技有限公司'
@@ -445,16 +435,6 @@ export const mockOpportunities = [
     updated_at: '2024-01-17 10:00:00',
     created_by: 2,
     updated_by: 2,
-    follow_notes: [
-      {
-        id: 2,
-        content: '客户暂未建档，后续需要先确认主体名称、统一社会信用代码和联系人信息。',
-        mention_user_ids: [1],
-        created_by: 2,
-        created_by_name: 'zhangsan',
-        created_at: '2024-01-17 15:45:00'
-      }
-    ],
     customer: null
   },
   {
@@ -470,16 +450,6 @@ export const mockOpportunities = [
     updated_at: '2024-01-19 16:45:00',
     created_by: 2,
     updated_by: 1,
-    follow_notes: [
-      {
-        id: 3,
-        content: '合同需求已推进到商务确认阶段，需关注交付范围和付款节点。',
-        mention_user_ids: [1, 5],
-        created_by: 1,
-        created_by_name: 'admin',
-        created_at: '2024-01-20 11:20:00'
-      }
-    ],
     customer: {
       id: 2,
       company_name: '上海贸易有限公司'
@@ -498,7 +468,6 @@ export const mockOpportunities = [
     updated_at: '2026-04-03 10:00:00',
     created_by: 1,
     updated_by: 1,
-    follow_notes: [],
     customer: {
       id: 5,
       company_name: '麟鲤科技'
@@ -517,7 +486,6 @@ export const mockOpportunities = [
     updated_at: '2026-04-14 09:00:00',
     created_by: 1,
     updated_by: 1,
-    follow_notes: [],
     customer: {
       id: 7,
       company_name: 'xxx科技'
@@ -881,40 +849,28 @@ const expandedOpportunities = [
   { id: 15, customer_id: 20, title: '新加坡海贸跨境客户需求', opportunity_type: 'proposal', status: '跟进中', description: '海外客户档案与微信通知联动', probability: 50, expected_close_date: '2026-09-12', created_at: '2026-04-25 09:45:00', updated_at: '2026-04-25 09:45:00', created_by: 1, updated_by: 1, customer: { id: 20, company_name: '新加坡海贸控股' } }
 ]
 
-const attachOpportunitiesToCustomer = (customer) => {
-  const existingOpportunities = customer.opportunities || [];
-  const appendedOpportunities = expandedOpportunities
-    .filter(opportunity => opportunity.customer_id === customer.id)
-    .map(opportunity => ({
-      id: opportunity.id,
-      title: opportunity.title,
-      opportunity_type: opportunity.opportunity_type,
-      status: opportunity.status,
-      description: opportunity.description,
-      created_at: opportunity.created_at
-    }));
+const attachOpportunitiesToCustomer = (customer) => ({
+  ...customer,
+  opportunities: [
+    ...(customer.opportunities || []),
+    ...expandedOpportunities
+      .filter(opportunity => opportunity.customer_id === customer.id)
+      .map(opportunity => ({
+        id: opportunity.id,
+        title: opportunity.title,
+        opportunity_type: opportunity.opportunity_type,
+        status: opportunity.status,
+        description: opportunity.description,
+        created_at: opportunity.created_at
+      }))
+  ]
+})
 
-  const opportunityMap = new Map();
-  [...existingOpportunities, ...appendedOpportunities].forEach(opportunity => {
-    opportunityMap.set(opportunity.id, opportunity);
-  });
-
-  return {
-    ...customer,
-    opportunities: Array.from(opportunityMap.values())
-  };
-}
-
-const getOpportunityFollowNotes = (opportunity) => opportunity.follow_notes || [];
-
-mockCustomers.push(...expandedCustomers)
+mockCustomers.push(...expandedCustomers.map(attachOpportunitiesToCustomer))
 mockCustomers.forEach((customer, index) => {
   mockCustomers[index] = attachOpportunitiesToCustomer(customer)
 })
-mockOpportunities.push(...expandedOpportunities.map(opportunity => ({
-  ...opportunity,
-  follow_notes: getOpportunityFollowNotes(opportunity)
-})))
+mockOpportunities.push(...expandedOpportunities)
 
 export const mockCurrentUser = {
   id: 1,

@@ -54,10 +54,10 @@ const InputReport = () => {
   };
 
   const getRankColor = (rank) => {
-    if (rank === 1) return '#f5222d';
-    if (rank === 2) return '#fa8c16';
-    if (rank === 3) return '#faad14';
-    return '#1890ff';
+    if (rank === 1) return '#c24b44';
+    if (rank === 2) return '#b76e16';
+    if (rank === 3) return '#d48925';
+    return '#2f6fa8';
   };
 
   return (
