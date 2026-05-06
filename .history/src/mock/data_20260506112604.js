@@ -849,27 +849,22 @@ const expandedOpportunities = [
   { id: 15, customer_id: 20, title: '新加坡海贸跨境客户需求', opportunity_type: 'proposal', status: '跟进中', description: '海外客户档案与微信通知联动', probability: 50, expected_close_date: '2026-09-12', created_at: '2026-04-25 09:45:00', updated_at: '2026-04-25 09:45:00', created_by: 1, updated_by: 1, customer: { id: 20, company_name: '新加坡海贸控股' } }
 ]
 
-const attachOpportunitiesToCustomer = (customer) => {
-  const existingOpps = customer.opportunities || [];
-  const newOpps = expandedOpportunities
-    .filter(opportunity => opportunity.customer_id === customer.id)
-    .map(opportunity => ({
-      id: opportunity.id,
-      title: opportunity.title,
-      opportunity_type: opportunity.opportunity_type,
-      status: opportunity.status,
-      description: opportunity.description,
-      created_at: opportunity.created_at
-    }));
-
-  const existingIds = new Set(existingOpps.map(opp => opp.id));
-  const uniqueNewOpps = newOpps.filter(opp => !existingIds.has(opp.id));
-
-  return {
-    ...customer,
-    opportunities: [...existingOpps, ...uniqueNewOpps]
-  };
-};
+const attachOpportunitiesToCustomer = (customer) => ({
+  ...customer,
+  opportunities: [
+    ...(customer.opportunities || []),
+    ...expandedOpportunities
+      .filter(opportunity => opportunity.customer_id === customer.id)
+      .map(opportunity => ({
+        id: opportunity.id,
+        title: opportunity.title,
+        opportunity_type: opportunity.opportunity_type,
+        status: opportunity.status,
+        description: opportunity.description,
+        created_at: opportunity.created_at
+      }))
+  ]
+})
 
 mockCustomers.push(...expandedCustomers.map(attachOpportunitiesToCustomer))
 mockCustomers.forEach((customer, index) => {

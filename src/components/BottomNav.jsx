@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { TeamOutlined, RiseOutlined, BarChartOutlined, UserOutlined } from '@ant-design/icons';
+import { BarChartOutlined, HomeOutlined, RiseOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import './BottomNav.css';
 
 const BottomNav = ({ userRole }) => {
@@ -8,6 +8,12 @@ const BottomNav = ({ userRole }) => {
   const location = useLocation();
 
   const navItems = [
+    {
+      key: '/home',
+      icon: <HomeOutlined />,
+      label: '首页',
+      path: '/home'
+    },
     {
       key: '/customers',
       icon: <TeamOutlined />,

@@ -22,7 +22,7 @@ const Login = ({ onLogin }) => {
           unit: '总部',
           role: 'admin'
         });
-        navigate('/customers');
+        navigate('/home');
       } else if (values.username === 'entry' && values.password === 'entry123') {
         const entryUser = mockUsers.find(u => u.role === 'entry');
         message.success('登录成功');
@@ -33,7 +33,7 @@ const Login = ({ onLogin }) => {
           unit: entryUser?.unit || '销售部',
           role: 'entry'
         });
-        navigate('/customers');
+        navigate('/home');
       } else {
         message.error('用户名或密码错误');
       }

@@ -34,3 +34,8 @@
   padding: 12px;
   overflow-y: auto;
 }
+
+.home-layout .main-content {
+  margin-top: 0;
+  padding: 12px;
+}

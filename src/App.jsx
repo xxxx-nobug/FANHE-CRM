@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import MainLayout from './components/MainLayout';
+import HomePage from './pages/HomePage';
 import CustomerList from './pages/CustomerList';
 import CustomerDetail from './pages/CustomerDetail';
 import CustomerForm from './pages/CustomerForm';
@@ -41,7 +42,7 @@ function App() {
           <Route 
             path="/login" 
             element={
-              user ? <Navigate to="/customers" replace /> : <Login onLogin={handleLogin} />
+              user ? <Navigate to="/home" replace /> : <Login onLogin={handleLogin} />
             } 
           />
           
@@ -51,7 +52,8 @@ function App() {
               user ? (
                 <MainLayout user={user}>
                   <Routes>
-                    <Route path="/" element={<Navigate to="/customers" replace />} />
+                    <Route path="/" element={<Navigate to="/home" replace />} />
+                    <Route path="/home" element={<HomePage user={user} customers={customers} notifications={notifications} />} />
                     <Route path="/customers" element={<CustomerList user={user} customers={customers} setCustomers={setCustomers} />} />
                     <Route path="/customers/create" element={<CustomerForm user={user} customers={customers} setCustomers={setCustomers} setNotifications={setNotifications} />} />
                     <Route path="/customers/:id" element={<CustomerDetail user={user} customers={customers} />} />

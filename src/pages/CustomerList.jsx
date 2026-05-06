@@ -1,12 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Card, Input, Tag, Button, Empty, Modal, Spin, Cascader, Upload, message } from 'antd';
 import { TeamOutlined, RiseOutlined, UserOutlined, EnvironmentOutlined, EditOutlined, PlusOutlined, PhoneOutlined, MailOutlined, DeleteOutlined, TagsOutlined, FileExcelOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   customerMatchesLocation,
+  FOREIGN_LOCATION_VALUE,
   getCustomerIndustryTags,
   getCustomerLocationLabel,
   getCustomTags,
+  getIndustryPath,
   getIndustryValuesByPath,
   industryOptions,
   locationOptions
@@ -20,16 +22,37 @@ const CUSTOMER_SEARCH_HISTORY_KEY = 'crm_customer_search_history';
 
 const CustomerList = ({ user, customers, setCustomers }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const canDelete = user?.role === 'admin';
-  const [searchText, setSearchText] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState([]);
-  const [selectedIndustry, setSelectedIndustry] = useState([]);
+  const getQueryLocation = () => {
+    const country = searchParams.get('country');
+    const province = searchParams.get('province');
+    const city = searchParams.get('city');
+    if (country) return [FOREIGN_LOCATION_VALUE, country];
+    if (province && city) return [province, city];
+    return [];
+  };
+  const getQueryIndustry = () => {
+    const industry = searchParams.get('industry');
+    return industry ? getIndustryPath(industry) || [] : [];
+  };
+  const [searchText, setSearchText] = useState(searchParams.get('q') || '');
+  const [selectedLocation, setSelectedLocation] = useState(getQueryLocation);
+  const [selectedIndustry, setSelectedIndustry] = useState(getQueryIndustry);
   const [searchHistory, setSearchHistory] = useState(() => getSearchHistory(CUSTOMER_SEARCH_HISTORY_KEY));
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
   const [isExcelModalVisible, setIsExcelModalVisible] = useState(false);
   const [importing, setImporting] = useState(false);
   const containerRef = useRef(null);
   const [displayCount, setDisplayCount] = useState(5);
+
+  useEffect(() => {
+    setSearchText(searchParams.get('q') || '');
+    setSelectedLocation(getQueryLocation());
+    setSelectedIndustry(getQueryIndustry());
+    setDisplayCount(5);
+  }, [location.search]);
 
   const filteredCustomers = customers.filter(customer => {
     const industryTags = getCustomerIndustryTags(customer);
