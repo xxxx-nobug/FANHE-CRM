@@ -41,6 +41,10 @@
 .location {
   font-size: 14px;
   color: #666;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .detail-info .ant-descriptions-item-label {

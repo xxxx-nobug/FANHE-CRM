@@ -15,3 +15,4 @@ export default defineConfig(({ command }) => ({
     },
   },
 }))
+// 的方式地方

@@ -70,7 +70,7 @@ const InputReport = () => {
         >
           返回
         </Button>
-        <h2>录入统计报表</h2>
+        <h2>录入统计</h2>
       </div>
 
       <div className="report-description">
@@ -105,7 +105,7 @@ const InputReport = () => {
                 </div>
                 <div className="stat-item">
                   <RiseOutlined className="stat-icon" />
-                  <span className="stat-label">商机数</span>
+                  <span className="stat-label">需求数</span>
                   <Tag color={item.opportunityCount > 0 ? 'green' : 'default'} className="stat-tag">
                     {item.opportunityCount}
                   </Tag>

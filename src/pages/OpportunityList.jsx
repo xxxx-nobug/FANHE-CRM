@@ -122,14 +122,14 @@ const OpportunityList = () => {
       ) : (
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}
-          description="暂无商机数据"
+          description="暂无需求数据"
           className="empty-state"
         >
           <Button 
             type="primary" 
             onClick={() => navigate('/opportunities/create')}
           >
-            新建商机
+            新建需求
           </Button>
         </Empty>
       )}

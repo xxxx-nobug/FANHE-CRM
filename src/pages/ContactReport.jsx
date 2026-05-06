@@ -93,7 +93,7 @@ const ContactReport = () => {
           >
             返回
           </Button>
-          <h2>相同联系方式分析报表</h2>
+          <h2>相同联系方式分析</h2>
         </div>
 
         <div className="report-description">

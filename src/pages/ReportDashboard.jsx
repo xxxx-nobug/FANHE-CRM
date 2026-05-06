@@ -8,7 +8,7 @@ import './ReportDashboard.css';
 const ReportDashboard = () => {
   const navigate = useNavigate();
 
-  // 1. 商机统计 - 按客户统计商机数量
+  // 1. 需求统计 - 按客户统计需求数量
   const customerOpportunityCount = {};
   mockCustomers.forEach(customer => {
     customerOpportunityCount[customer.id] = {
@@ -34,7 +34,7 @@ const ReportDashboard = () => {
       key: 'company_name',
     },
     {
-      title: '商机数量',
+      title: '需求数量',
       dataIndex: 'count',
       key: 'count',
       render: (count) => <Tag color={count > 0 ? 'blue' : 'default'}>{count}</Tag>
@@ -148,10 +148,10 @@ const ReportDashboard = () => {
 
   return (
     <div className="report-dashboard">
-      {/* 1. 商机统计 */}
-      <Card className="report-card" title="商机统计">
+      {/* 1. 需求统计 */}
+      <Card className="report-card" title="需求统计">
         <div className="report-description">
-          查看按客户统计的商机数量
+          查看按客户统计的需求数量
         </div>
         <Table
           dataSource={customerOpportunityData}
@@ -167,7 +167,7 @@ const ReportDashboard = () => {
             icon={<ArrowRightOutlined />}
             onClick={() => navigate('/reports/opportunity')}
           >
-            查看报表
+            查看统计
           </Button>
         </div>
       </Card>
@@ -191,7 +191,7 @@ const ReportDashboard = () => {
             icon={<ArrowRightOutlined />}
             onClick={() => navigate('/reports/input')}
           >
-            查看报表
+            查看统计
           </Button>
         </div>
       </Card>
@@ -215,7 +215,7 @@ const ReportDashboard = () => {
             icon={<ArrowRightOutlined />}
             onClick={() => navigate('/reports/contact')}
           >
-            查看报表
+            查看统计
           </Button>
         </div>
       </Card>

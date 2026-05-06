@@ -3,6 +3,7 @@ import { Card, Descriptions, Tag, Button, Space, Divider, List, Avatar, message,
 import { EnvironmentOutlined, PhoneOutlined, MailOutlined, EditOutlined, PlusOutlined, DeleteOutlined, UserOutlined, WarningOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockCustomers, mockOpportunities } from '../mock/data';
+import { getCustomerIndustryTags, getCustomerLocationLabel, getCustomTags } from '../constants/customerDictionaries';
 import './CustomerDetail.css';
 
 const CustomerDetail = () => {
@@ -82,7 +83,7 @@ const CustomerDetail = () => {
         <div className="detail-header">
           <h2>{customer.company_name}</h2>
           <div className="location">
-            <EnvironmentOutlined /> {customer.country || customer.region}
+            <EnvironmentOutlined /> {getCustomerLocationLabel(customer)}
             {customer.tags && customer.tags.includes('黑名单') && (
               <Tag color="red" style={{ marginLeft: 8 }}>黑名单</Tag>
             )}
@@ -91,6 +92,7 @@ const CustomerDetail = () => {
 
         <Descriptions column={1} className="detail-info">
           <Descriptions.Item label="信用代码">{customer.credit_code || '-'}</Descriptions.Item>
+          <Descriptions.Item label="省市/国家">{getCustomerLocationLabel(customer)}</Descriptions.Item>
           <Descriptions.Item label="地址">{customer.address || '-'}</Descriptions.Item>
           <Descriptions.Item label="电话">
             {customer.phone ? (
@@ -112,10 +114,21 @@ const CustomerDetail = () => {
           {customer.description && (
             <Descriptions.Item label="描述">{customer.description}</Descriptions.Item>
           )}
-          {customer.tags && (
-            <Descriptions.Item label="标签">
-              {customer.tags.split(',').map((tag, index) => (
-                tag.trim() && <Tag key={index} color="blue">{tag.trim()}</Tag>
+          <Descriptions.Item label="行业标签">
+            {getCustomerIndustryTags(customer).length > 0 ? (
+              getCustomerIndustryTags(customer).map((tag) => (
+                <Tag key={tag} color="green">{tag}</Tag>
+              ))
+            ) : '-'}
+          </Descriptions.Item>
+          {getCustomTags(customer).length > 0 && (
+            <Descriptions.Item label="其他标签">
+              {getCustomTags(customer).map((tag, index) => (
+                tag.trim() && (
+                  <Tag key={index} color={tag.trim() === '黑名单' ? 'red' : 'blue'}>
+                    {tag.trim()}
+                  </Tag>
+                )
               ))}
             </Descriptions.Item>
           )}
@@ -136,7 +149,7 @@ const CustomerDetail = () => {
             icon={<PlusOutlined />}
             onClick={() => navigate(`/opportunities/create?customer_id=${id}`)}
           >
-            添加商机
+            添加需求
           </Button>
           <Button 
             type={isBlacklisted ? "danger" : "default"}
@@ -220,13 +233,13 @@ const CustomerDetail = () => {
 
       <div className="section-header">
         <div className="section-title">
-          商机 ({customer.opportunities?.length || 0})
+          需求 ({customer.opportunities?.length || 0})
         </div>
       </div>
 
       {customer.opportunities && customer.opportunities.length > 0 ? (
         customer.opportunities.map(opp => {
-          // 找到完整的商机信息
+          // 找到完整的需求信息
           const fullOpportunity = mockOpportunities.find(o => o.id === opp.id);
           return (
             <Card 
@@ -246,7 +259,7 @@ const CustomerDetail = () => {
         })
       ) : (
         <Card className="empty-card">
-          <div className="empty-text">暂无商机</div>
+          <div className="empty-text">暂无需求</div>
         </Card>
       )}
 

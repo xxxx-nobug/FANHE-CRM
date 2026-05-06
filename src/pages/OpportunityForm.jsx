@@ -45,7 +45,7 @@ const OpportunityForm = () => {
       };
       
       console.log('Opportunity data:', opportunityData);
-      message.success(isEdit ? '商机更新成功' : '商机创建成功');
+      message.success(isEdit ? '需求更新成功' : '需求创建成功');
       setLoading(false);
       navigate('/opportunities');
     }, 500);
@@ -62,7 +62,7 @@ const OpportunityForm = () => {
           >
             返回
           </Button>
-          <h2>{isEdit ? '编辑商机' : '新建商机'}</h2>
+          <h2>{isEdit ? '编辑需求' : '新建需求'}</h2>
         </div>
 
         <Form
@@ -98,7 +98,7 @@ const OpportunityForm = () => {
           >
             <Mentions
               rows={4}
-              placeholder="请输入商机描述，输入@可提及用户"
+              placeholder="请输入需求描述，输入@可提及用户"
               prefix="@"
               options={mockUsers.map(user => ({
                 value: user.username,

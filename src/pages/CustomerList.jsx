@@ -1,8 +1,17 @@
 import React, { useState, useRef } from 'react';
-import { Card, Input, Tag, Button, Empty, Modal, Spin } from 'antd';
-import { SearchOutlined, TeamOutlined, RiseOutlined, UserOutlined, EnvironmentOutlined, EditOutlined, PlusOutlined, PhoneOutlined, MailOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Card, Input, Tag, Button, Empty, Modal, Spin, Cascader } from 'antd';
+import { TeamOutlined, RiseOutlined, UserOutlined, EnvironmentOutlined, EditOutlined, PlusOutlined, PhoneOutlined, MailOutlined, DeleteOutlined, TagsOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockCustomers } from '../mock/data';
+import {
+  customerMatchesLocation,
+  getCustomerIndustryTags,
+  getCustomerLocationLabel,
+  getCustomTags,
+  getIndustryValuesByPath,
+  industryOptions,
+  locationOptions
+} from '../constants/customerDictionaries';
 import './CustomerList.css';
 
 const { Search } = Input;
@@ -10,17 +19,23 @@ const { Search } = Input;
 const CustomerList = () => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState('');
-  const [selectedRegion, setSelectedRegion] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState([]);
+  const [selectedIndustry, setSelectedIndustry] = useState([]);
   const containerRef = useRef(null);
   const [displayCount, setDisplayCount] = useState(5);
 
-  const regions = ['华北', '华东', '华南', '华中', '西北', '西南', '东北', '国外'];
-
   const filteredCustomers = mockCustomers.filter(customer => {
+    const industryTags = getCustomerIndustryTags(customer);
+    const customTags = getCustomTags(customer);
+    const selectedIndustryValues = getIndustryValuesByPath(selectedIndustry);
     const matchesSearch = customer.company_name.includes(searchText) || 
-                         (customer.address && customer.address.includes(searchText));
-    const matchesRegion = !selectedRegion || customer.region === selectedRegion;
-    return matchesSearch && matchesRegion;
+                         (customer.address && customer.address.includes(searchText)) ||
+                         industryTags.some(tag => tag.includes(searchText)) ||
+                         customTags.some(tag => tag.includes(searchText));
+    const matchesLocation = customerMatchesLocation(customer, selectedLocation);
+    const matchesIndustry = selectedIndustryValues.length === 0 ||
+      industryTags.some(tag => selectedIndustryValues.includes(tag));
+    return matchesSearch && matchesLocation && matchesIndustry;
   });
 
   // 懒加载：监听滚动事件
@@ -41,8 +56,13 @@ const CustomerList = () => {
     setDisplayCount(5);
   };
 
-  const handleRegionChange = (region) => {
-    setSelectedRegion(region === selectedRegion ? '' : region);
+  const handleLocationChange = (value) => {
+    setSelectedLocation(value || []);
+    setDisplayCount(5);
+  };
+
+  const handleIndustryChange = (value) => {
+    setSelectedIndustry(value || []);
     setDisplayCount(5);
   };
 
@@ -83,7 +103,7 @@ const CustomerList = () => {
     <div className="customer-list" ref={containerRef} onScroll={handleScroll}>
       <div className="search-section">
         <Search
-          placeholder="搜索公司名称或地址"
+          placeholder="搜索公司名称、地址或标签"
           value={searchText}
           onChange={handleSearchChange}
           className="search-input"
@@ -92,25 +112,33 @@ const CustomerList = () => {
       </div>
 
       <div className="filter-section">
-        <Tag 
-          color={!selectedRegion ? 'blue' : 'default'}
-          className="filter-tag"
-          onClick={() => handleRegionChange('')}
-          style={{ cursor: 'pointer' }}
-        >
-          全部
-        </Tag>
-        {regions.map(region => (
-          <Tag
-            key={region}
-            color={selectedRegion === region ? 'blue' : 'default'}
-            className="filter-tag"
-            onClick={() => handleRegionChange(region)}
-            style={{ cursor: 'pointer' }}
-          >
-            {region}
-          </Tag>
-        ))}
+        <Cascader
+          className="filter-cascader"
+          options={locationOptions}
+          value={selectedLocation}
+          onChange={handleLocationChange}
+          placeholder="省市/国家"
+          allowClear
+          changeOnSelect
+          showSearch
+          expandTrigger="click"
+          displayRender={(labels) => labels[0] === labels[1] ? labels[0] : labels.join(' / ')}
+          placement="bottomLeft"
+          getPopupContainer={() => containerRef.current || document.body}
+        />
+        <Cascader
+          className="filter-cascader"
+          options={industryOptions}
+          value={selectedIndustry}
+          onChange={handleIndustryChange}
+          placeholder="行业标签"
+          allowClear
+          changeOnSelect
+          showSearch
+          expandTrigger="click"
+          placement="bottomLeft"
+          getPopupContainer={() => containerRef.current || document.body}
+        />
       </div>
 
       {displayCustomers.length > 0 ? (
@@ -132,28 +160,35 @@ const CustomerList = () => {
               </div>
               
               <div className="region-tag">
-                <EnvironmentOutlined /> {customer.country || customer.region}
+                <EnvironmentOutlined /> {getCustomerLocationLabel(customer)}
               </div>
 
               <div className="meta-info">
                 <span><TeamOutlined /> {customer.contacts?.length || 0} 联系人</span>
-                <span><RiseOutlined /> {customer.opportunities?.length || 0} 商机</span>
+                <span><RiseOutlined /> {customer.opportunities?.length || 0} 需求</span>
                 <span><UserOutlined /> {customer.created_by === 1 ? 'admin' : '未知'}</span>
               </div>
 
-              {customer.tags && (
+              {getCustomerIndustryTags(customer).length > 0 && (
                 <div className="tags-section">
-                  {customer.tags.split(',').slice(0, 3).map((tag, index) => {
-                    const trimmedTag = tag.trim();
-                    return trimmedTag && (
+                  {getCustomerIndustryTags(customer).slice(0, 4).map(tag => (
+                    <Tag key={tag} color="green" icon={<TagsOutlined />}>
+                      {tag}
+                    </Tag>
+                  ))}
+                </div>
+              )}
+
+              {getCustomTags(customer).length > 0 && (
+                <div className="tags-section">
+                  {getCustomTags(customer).slice(0, 3).map((trimmedTag, index) => (
                       <Tag 
                         key={index} 
                         color={trimmedTag === '黑名单' ? 'red' : 'blue'}
                       >
                         {trimmedTag}
                       </Tag>
-                    );
-                  })}
+                  ))}
                 </div>
               )}
 
@@ -193,7 +228,7 @@ const CustomerList = () => {
                   icon={<PlusOutlined />}
                   onClick={(e) => handleAddOpportunity(e, customer.id)}
                 >
-                  添加商机
+                  添加需求
                 </Button>
                 <Button 
                   type="default" 

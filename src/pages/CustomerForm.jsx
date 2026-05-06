@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Form, Input, Select, InputNumber, Upload, Button, message } from 'antd';
+import { Card, Form, Input, Select, InputNumber, Upload, Button, message, Cascader } from 'antd';
 import { UploadOutlined, ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { mockCustomers } from '../mock/data';
+import {
+  FOREIGN_LOCATION_VALUE,
+  flattenIndustryPaths,
+  getCustomerIndustryTags,
+  getCustomerLocationPath,
+  getCustomTags,
+  getIndustryPathsFromTags,
+  industryOptions,
+  locationOptions
+} from '../constants/customerDictionaries';
 import './CustomerForm.css';
 
 const { TextArea } = Input;
-const { Option } = Select;
 
 const CustomerForm = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [selectedRegion, setSelectedRegion] = useState('');
   const [loading, setLoading] = useState(false);
+  const locationPath = Form.useWatch('location_path', form);
   
   const customerId = id;
   const isEdit = !!customerId;
-  
-  const regions = ['华北', '华东', '华南', '华中', '西北', '西南', '东北', '国外'];
-  const countries = [
-    '美国', '日本', '德国', '英国', '法国', '韩国', '新加坡', '澳大利亚',
-    '加拿大', '意大利', '俄罗斯', '印度', '巴西', '墨西哥', '荷兰',
-    '瑞士', '瑞典', '西班牙', '阿联酋', '沙特阿拉伯', '泰国', '越南',
-    '马来西亚', '印度尼西亚', '菲律宾', '土耳其', '以色列', '南非',
-    '埃及', '新西兰', '其他'
-  ];
+  const isForeignCustomer = locationPath?.[0] === FOREIGN_LOCATION_VALUE;
+  const hasLocation = Array.isArray(locationPath) && locationPath.length > 0;
 
   useEffect(() => {
     if (isEdit) {
@@ -33,39 +35,41 @@ const CustomerForm = () => {
       if (customer) {
         form.setFieldsValue({
           company_name: customer.company_name,
-          region: customer.region,
-          country: customer.country,
+          location_path: getCustomerLocationPath(customer),
+          industry_paths: getIndustryPathsFromTags(getCustomerIndustryTags(customer)),
           credit_code: customer.credit_code,
           address: customer.address,
           phone: customer.phone,
           email: customer.email,
           registered_capital: customer.registered_capital,
           description: customer.description,
-          tags: customer.tags ? customer.tags.split(',') : []
+          tags: getCustomTags(customer)
         });
-        setSelectedRegion(customer.region);
       }
     }
   }, [customerId, form, isEdit]);
-
-  const handleRegionChange = (value) => {
-    setSelectedRegion(value);
-    if (value !== '国外') {
-      form.setFieldsValue({ country: undefined });
-    }
-  };
 
   const onFinish = (values) => {
     setLoading(true);
     
     setTimeout(() => {
       const tags = values.tags ? values.tags.join(',') : '';
+      const industryTags = flattenIndustryPaths(values.industry_paths);
+      const [locationLevel1, locationLevel2] = values.location_path || [];
+      const isForeign = locationLevel1 === FOREIGN_LOCATION_VALUE;
       const customerData = {
         ...values,
+        region: isForeign ? FOREIGN_LOCATION_VALUE : null,
+        province: isForeign ? null : locationLevel1,
+        city: isForeign ? null : locationLevel2,
+        country: isForeign ? locationLevel2 : null,
+        industry_tags: industryTags,
         tags,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
+      delete customerData.location_path;
+      delete customerData.industry_paths;
       
       console.log('Customer data:', customerData);
       message.success(isEdit ? '客户信息更新成功' : '客户创建成功');
@@ -110,35 +114,31 @@ const CustomerForm = () => {
           </Form.Item>
 
           <Form.Item
-            name="region"
-            label="主要办公地"
-            rules={[{ required: true, message: '请选择主要办公地' }]}
+            name="location_path"
+            label="省市/国家标签"
+            rules={[
+              { required: true, message: '请选择省市或国家' },
+              {
+                validator(_, value) {
+                  if (value && value.length >= 2) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('请选择到城市或国家'));
+                },
+              },
+            ]}
           >
-            <Select 
-              placeholder="请选择主要办公地"
-              onChange={handleRegionChange}
-            >
-              {regions.map(region => (
-                <Option key={region} value={region}>{region}</Option>
-              ))}
-            </Select>
+            <Cascader
+              options={locationOptions}
+              placeholder="请选择省市；国外客户请选择国家"
+              showSearch
+              expandTrigger="click"
+              displayRender={(labels) => labels[0] === labels[1] ? labels[0] : labels.join(' / ')}
+              placement="bottomLeft"
+            />
           </Form.Item>
 
-          {selectedRegion === '国外' && (
-            <Form.Item
-              name="country"
-              label="国家"
-              rules={[{ required: true, message: '请选择国家' }]}
-            >
-              <Select placeholder="请选择国家" showSearch>
-                {countries.map(country => (
-                  <Option key={country} value={country}>{country}</Option>
-                ))}
-              </Select>
-            </Form.Item>
-          )}
-
-          {selectedRegion && selectedRegion !== '国外' && (
+          {hasLocation && !isForeignCustomer && (
             <Form.Item
               name="credit_code"
               label="统一社会信用代码"
@@ -147,6 +147,32 @@ const CustomerForm = () => {
               <Input placeholder="请输入统一社会信用代码" />
             </Form.Item>
           )}
+
+          <Form.Item
+            name="industry_paths"
+            label="行业标签"
+            rules={[
+              { required: true, message: '请选择行业标签' },
+              {
+                validator(_, value) {
+                  if (Array.isArray(value) && value.length > 0) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('至少选择一个行业标签'));
+                },
+              },
+            ]}
+          >
+            <Cascader
+              options={industryOptions}
+              placeholder="请选择行业标签"
+              multiple
+              maxTagCount="responsive"
+              showSearch
+              expandTrigger="click"
+              placement="bottomLeft"
+            />
+          </Form.Item>
 
           <Form.Item
             name="address"
@@ -191,11 +217,11 @@ const CustomerForm = () => {
 
           <Form.Item
             name="tags"
-            label="客户标签"
+            label="其他标签"
           >
             <Select 
               mode="tags" 
-              placeholder="输入标签后按回车"
+              placeholder="输入补充标签后按回车"
               style={{ width: '100%' }}
             />
           </Form.Item>

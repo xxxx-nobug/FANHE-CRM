@@ -17,16 +17,16 @@ const OpportunityDetail = () => {
 
   const getOpportunityTypeLabel = (type) => {
     const labels = {
-      intent: '意向商机（10%）',
-      proposal: '方案商机（50%）',
-      contract: '合同商机（75%）',
+      intent: '意向需求（10%）',
+      proposal: '方案需求（50%）',
+      contract: '合同需求（75%）',
       contract_signed: '合同双签（100%）'
     };
     return labels[type] || type;
   };
 
   if (!opportunity) {
-    return <div>商机不存在</div>;
+    return <div>需求不存在</div>;
   }
 
   return (

@@ -17,13 +17,13 @@ const BottomNav = ({ userRole }) => {
     {
       key: '/opportunities',
       icon: <RiseOutlined />,
-      label: '商机',
+      label: '需求',
       path: '/opportunities'
     },
     {
       key: '/reports',
       icon: <BarChartOutlined />,
-      label: '报表',
+      label: '统计',
       path: '/reports',
       adminOnly: true
     },

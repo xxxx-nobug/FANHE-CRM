@@ -38,13 +38,15 @@
 
 .form-card .ant-input,
 .form-card .ant-select-selector,
-.form-card .ant-input-number {
+.form-card .ant-input-number,
+.form-card .ant-cascader .ant-select-selector {
   border-radius: 8px;
 }
 
 .form-card .ant-input:focus,
 .form-card .ant-input-focused,
 .form-card .ant-select-focused .ant-select-selector,
+.form-card .ant-cascader-focused .ant-select-selector,
 .form-card .ant-input-number:focus,
 .form-card .ant-input-number-focused {
   border-color: #1890ff;

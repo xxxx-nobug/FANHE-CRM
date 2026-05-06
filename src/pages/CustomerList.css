@@ -18,16 +18,25 @@
 }
 
 .filter-section {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
   margin-bottom: 12px;
 }
 
-.filter-tag {
-  margin: 0;
-  border-radius: 16px;
-  padding: 4px 12px;
+.filter-cascader {
+  width: 100%;
+}
+
+.filter-cascader .ant-select-selector {
+  min-height: 36px;
+  border-radius: 18px;
+}
+
+@media (max-width: 420px) {
+  .filter-section {
+    grid-template-columns: 1fr;
+  }
 }
 
 .customer-card {

@@ -3,6 +3,7 @@ import { Card, Button, Spin, Tag } from 'antd';
 import { ArrowLeftOutlined, RiseOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockCustomers, mockOpportunities } from '../mock/data';
+import { getCustomerLocationLabel } from '../constants/customerDictionaries';
 import './OpportunityReport.css';
 
 const OpportunityReport = () => {
@@ -75,11 +76,11 @@ const OpportunityReport = () => {
         >
           返回
         </Button>
-        <h2>商机统计报表</h2>
+        <h2>需求统计</h2>
       </div>
 
       <div className="report-description">
-        按客户统计商机数量
+        按客户统计需求数量
       </div>
 
       {displayData.length > 0 ? (
@@ -101,7 +102,7 @@ const OpportunityReport = () => {
                   </div>
                   {item.id !== 0 && (
                     <div className="region-text">
-                      <EnvironmentOutlined /> {mockCustomers.find(c => c.id === item.id)?.region || ''}
+                      <EnvironmentOutlined /> {getCustomerLocationLabel(mockCustomers.find(c => c.id === item.id))}
                     </div>
                   )}
                 </div>
@@ -110,7 +111,7 @@ const OpportunityReport = () => {
               <div className="stat-row">
                 <div className="stat-item">
                   <RiseOutlined className="stat-icon" />
-                  <span className="stat-label">商机数</span>
+                  <span className="stat-label">需求数</span>
                   <Tag color={item.count > 0 ? 'blue' : 'default'} className="stat-tag">
                     {item.count}
                   </Tag>
@@ -134,7 +135,7 @@ const OpportunityReport = () => {
         </>
       ) : (
         <div className="empty-state">
-          <p>暂无商机统计数据</p>
+          <p>暂无需求统计数据</p>
         </div>
       )}
     </div>

@@ -13,5 +13,5 @@ export default defineConfig(({ command }) => ({
         changeOrigin: true,
       },
     },
-  },
+  }, 
 }))
