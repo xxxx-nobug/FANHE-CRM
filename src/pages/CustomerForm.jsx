@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Card, Form, Input, Select, InputNumber, Upload, Button, message, Cascader } from 'antd';
 import { UploadOutlined, ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
-import { mockCustomers } from '../mock/data';
 import {
   FOREIGN_LOCATION_VALUE,
   flattenIndustryPaths,
@@ -17,7 +16,7 @@ import './CustomerForm.css';
 
 const { TextArea } = Input;
 
-const CustomerForm = () => {
+const CustomerForm = ({ customers = [] }) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -31,7 +30,7 @@ const CustomerForm = () => {
 
   useEffect(() => {
     if (isEdit) {
-      const customer = mockCustomers.find(c => c.id === parseInt(customerId));
+      const customer = customers.find(c => c.id === parseInt(customerId));
       if (customer) {
         form.setFieldsValue({
           company_name: customer.company_name,

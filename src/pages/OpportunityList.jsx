@@ -1,15 +1,19 @@
 import React, { useState, useRef } from 'react';
 import { Card, Button, Empty, Input, Spin } from 'antd';
-import { SearchOutlined, UserOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { UserOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockOpportunities, mockUsers } from '../mock/data';
+import { addSearchHistory, getSearchHistory } from '../utils/searchHistory';
 import './OpportunityList.css';
 
 const { Search } = Input;
+const OPPORTUNITY_SEARCH_HISTORY_KEY = 'crm_opportunity_search_history';
 
 const OpportunityList = () => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState('');
+  const [searchHistory, setSearchHistory] = useState(() => getSearchHistory(OPPORTUNITY_SEARCH_HISTORY_KEY));
+  const [isHistoryVisible, setIsHistoryVisible] = useState(false);
   const containerRef = useRef(null);
   const [displayCount, setDisplayCount] = useState(5);
 
@@ -43,6 +47,21 @@ const OpportunityList = () => {
     setDisplayCount(5);
   };
 
+  const handleSearchSubmit = (value) => {
+    const trimmedValue = value.trim();
+    if (!trimmedValue) return;
+    setSearchText(trimmedValue);
+    setSearchHistory(addSearchHistory(OPPORTUNITY_SEARCH_HISTORY_KEY, trimmedValue));
+    setIsHistoryVisible(false);
+    setDisplayCount(5);
+  };
+
+  const handleHistorySelect = (keyword) => {
+    setSearchText(keyword);
+    setIsHistoryVisible(false);
+    setDisplayCount(5);
+  };
+
   const displayOpportunities = filteredOpportunities.slice(0, displayCount);
 
   return (
@@ -52,9 +71,27 @@ const OpportunityList = () => {
           placeholder="搜索客户名称或描述"
           value={searchText}
           onChange={handleSearchChange}
+          onSearch={handleSearchSubmit}
+          onFocus={() => setIsHistoryVisible(true)}
+          onBlur={() => setTimeout(() => setIsHistoryVisible(false), 120)}
           className="search-input"
           allowClear
         />
+        {isHistoryVisible && searchHistory.length > 0 && (
+          <div className="search-history-panel" onMouseDown={(e) => e.preventDefault()}>
+            <div className="search-history-title">最近搜索</div>
+            {searchHistory.map(keyword => (
+              <button
+                type="button"
+                key={keyword}
+                className="search-history-item"
+                onClick={() => handleHistorySelect(keyword)}
+              >
+                {keyword}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {displayOpportunities.length > 0 ? (

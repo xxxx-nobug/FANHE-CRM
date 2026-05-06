@@ -1,17 +1,37 @@
 import React, { useState } from 'react';
-import { Card, Descriptions, Tag, Button, Space, Divider, List, Avatar, message, Modal, Form, Input, Select } from 'antd';
-import { EnvironmentOutlined, PhoneOutlined, MailOutlined, EditOutlined, PlusOutlined, DeleteOutlined, UserOutlined, WarningOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Card, Descriptions, Tag, Button, List, Avatar, message, Modal, Form, Input, Select } from 'antd';
+import { EnvironmentOutlined, PhoneOutlined, MailOutlined, EditOutlined, PlusOutlined, UserOutlined, WarningOutlined, CheckCircleOutlined, MessageOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockCustomers, mockOpportunities } from '../mock/data';
 import { getCustomerIndustryTags, getCustomerLocationLabel, getCustomTags } from '../constants/customerDictionaries';
 import './CustomerDetail.css';
 
-const CustomerDetail = () => {
+const backgroundTypeOptions = [
+  { value: 'lawsuit', label: '官司诉讼', color: 'red' },
+  { value: 'arrears', label: '赖账欠款', color: 'volcano' },
+  { value: 'dispute', label: '经济纠纷', color: 'orange' },
+  { value: 'credit', label: '信用风险', color: 'gold' },
+  { value: 'relationship', label: '合作关系', color: 'blue' },
+  { value: 'other', label: '其他补充', color: 'default' }
+];
+
+const getBackgroundType = (type) => (
+  backgroundTypeOptions.find(option => option.value === type) || backgroundTypeOptions[backgroundTypeOptions.length - 1]
+);
+
+const formatNow = () => {
+  const date = new Date();
+  const pad = (value) => String(value).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+};
+
+const CustomerDetail = ({ user, customers }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [customer, setCustomer] = useState(mockCustomers.find(c => c.id === parseInt(id)));
+  const [customer, setCustomer] = useState(customers.find(c => c.id === parseInt(id)));
   const [isAddContactVisible, setIsAddContactVisible] = useState(false);
+  const [isBackgroundModalVisible, setIsBackgroundModalVisible] = useState(false);
   const [contactForm] = Form.useForm();
+  const [backgroundForm] = Form.useForm();
   
   const isBlacklisted = customer?.tags && customer.tags.includes('黑名单');
   
@@ -71,6 +91,30 @@ const CustomerDetail = () => {
   const handleAddContactCancel = () => {
     setIsAddContactVisible(false);
     contactForm.resetFields();
+  };
+
+  const handleAddBackgroundNote = (values) => {
+    const newNote = {
+      id: Date.now(),
+      type: values.type,
+      content: values.content.trim(),
+      created_by: user?.id,
+      created_by_name: user?.username || '当前用户',
+      created_at: formatNow()
+    };
+
+    setCustomer({
+      ...customer,
+      background_notes: [...(customer.background_notes || []), newNote]
+    });
+    setIsBackgroundModalVisible(false);
+    backgroundForm.resetFields();
+    message.success('背景信息已补充');
+  };
+
+  const handleBackgroundCancel = () => {
+    setIsBackgroundModalVisible(false);
+    backgroundForm.resetFields();
   };
 
   if (!customer) {
@@ -178,6 +222,7 @@ const CustomerDetail = () => {
       {customer.contacts && customer.contacts.length > 0 ? (
         <List
           dataSource={customer.contacts}
+          rowKey="id"
           renderItem={contact => (
             <Card className="contact-card">
               <List.Item>
@@ -239,8 +284,6 @@ const CustomerDetail = () => {
 
       {customer.opportunities && customer.opportunities.length > 0 ? (
         customer.opportunities.map(opp => {
-          // 找到完整的需求信息
-          const fullOpportunity = mockOpportunities.find(o => o.id === opp.id);
           return (
             <Card 
               key={opp.id} 
@@ -262,6 +305,95 @@ const CustomerDetail = () => {
           <div className="empty-text">暂无需求</div>
         </Card>
       )}
+
+      <div className="section-header">
+        <div className="section-title">
+          背景信息补充 ({customer.background_notes?.length || 0})
+        </div>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => setIsBackgroundModalVisible(true)}
+          size="small"
+        >
+          添加
+        </Button>
+      </div>
+
+      <Card className="background-card">
+        {customer.background_notes && customer.background_notes.length > 0 ? (
+          <List
+            dataSource={[...customer.background_notes].sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''))}
+            rowKey="id"
+            renderItem={note => {
+              const typeConfig = getBackgroundType(note.type);
+              return (
+                <List.Item className="background-item">
+                  <List.Item.Meta
+                    avatar={<Avatar icon={<MessageOutlined />} />}
+                    title={
+                      <div className="background-meta">
+                        <Tag color={typeConfig.color}>{typeConfig.label}</Tag>
+                        <span className="background-author">{note.created_by_name || '未知用户'}</span>
+                        <span className="background-time">{note.created_at}</span>
+                      </div>
+                    }
+                    description={<div className="background-content">{note.content}</div>}
+                  />
+                </List.Item>
+              );
+            }}
+          />
+        ) : (
+          <div className="empty-text background-empty">暂无背景信息补充</div>
+        )}
+      </Card>
+
+      <Modal
+        title="添加背景信息"
+        open={isBackgroundModalVisible}
+        onOk={backgroundForm.submit}
+        onCancel={handleBackgroundCancel}
+        width={500}
+        okText="添加"
+        cancelText="取消"
+      >
+        <Form
+          form={backgroundForm}
+          layout="vertical"
+          onFinish={handleAddBackgroundNote}
+          initialValues={{ type: 'other' }}
+        >
+          <Form.Item
+            name="type"
+            label="信息类型"
+            rules={[{ required: true, message: '请选择信息类型' }]}
+          >
+            <Select placeholder="请选择信息类型">
+              {backgroundTypeOptions.map(option => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="content"
+            label="补充内容"
+            rules={[
+              { required: true, message: '请输入补充内容' },
+              { whitespace: true, message: '请输入有效内容' }
+            ]}
+          >
+            <Input.TextArea
+              rows={4}
+              maxLength={500}
+              showCount
+              placeholder="补充客户背景，例如是否存在官司、赖账、经济纠纷、合作风险或其他关键信息"
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
 
       {/* 添加联系人模态框 */}
       <Modal

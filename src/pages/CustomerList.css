@@ -7,6 +7,11 @@
 
 .search-section {
   margin-bottom: 12px;
+  position: relative;
+}
+
+.search-row {
+  display: block;
 }
 
 .search-input {
@@ -15,6 +20,60 @@
 
 .search-input .ant-input {
   border-radius: 20px;
+}
+
+.search-history-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+}
+
+.search-history-title {
+  color: #9e9e9e;
+  font-size: 12px;
+  padding: 4px 8px 6px;
+}
+
+.search-history-item {
+  width: 100%;
+  min-height: 36px;
+  border: 0;
+  background: transparent;
+  color: #424242;
+  text-align: left;
+  font-size: 14px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.search-history-item:active,
+.search-history-item:hover {
+  background: #f5f7fa;
+}
+
+.excel-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.excel-actions .ant-upload,
+.excel-actions .ant-upload-wrapper {
+  width: 100%;
+}
+
+.excel-error-list {
+  max-height: 220px;
+  overflow-y: auto;
+  color: #424242;
+  line-height: 1.8;
 }
 
 .filter-section {
@@ -185,30 +244,44 @@
   text-align: center;
 }
 
-.floating-add-button {
+.floating-actions {
   position: fixed;
   right: 20px;
   bottom: 80px;
-  width: 56px;
-  height: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 998;
+}
+
+.floating-action-button {
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  border: 0;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+  font-size: 20px;
   cursor: pointer;
-  transition: all 0.3s;
-  z-index: 998;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.floating-add-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.5);
+.add-action-button {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.32);
 }
 
-.floating-add-button:active {
+.excel-action-button {
+  background: linear-gradient(135deg, #34c759 0%, #1f8f4d 100%);
+  box-shadow: 0 4px 12px rgba(31, 143, 77, 0.28);
+}
+
+.floating-action-button:hover {
+  transform: translateY(-2px);
+}
+
+.floating-action-button:active {
   transform: scale(0.95);
 }

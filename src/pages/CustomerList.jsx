@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Card, Input, Tag, Button, Empty, Modal, Spin, Cascader } from 'antd';
-import { TeamOutlined, RiseOutlined, UserOutlined, EnvironmentOutlined, EditOutlined, PlusOutlined, PhoneOutlined, MailOutlined, DeleteOutlined, TagsOutlined } from '@ant-design/icons';
+import { Card, Input, Tag, Button, Empty, Modal, Spin, Cascader, Upload, message } from 'antd';
+import { TeamOutlined, RiseOutlined, UserOutlined, EnvironmentOutlined, EditOutlined, PlusOutlined, PhoneOutlined, MailOutlined, DeleteOutlined, TagsOutlined, FileExcelOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { mockCustomers } from '../mock/data';
 import {
   customerMatchesLocation,
   getCustomerIndustryTags,
@@ -12,19 +11,26 @@ import {
   industryOptions,
   locationOptions
 } from '../constants/customerDictionaries';
+import { downloadCustomerTemplate, exportCustomersToExcel, parseCustomersFromExcel } from '../utils/customerExcel';
+import { addSearchHistory, getSearchHistory } from '../utils/searchHistory';
 import './CustomerList.css';
 
 const { Search } = Input;
+const CUSTOMER_SEARCH_HISTORY_KEY = 'crm_customer_search_history';
 
-const CustomerList = () => {
+const CustomerList = ({ user, customers, setCustomers }) => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState('');
   const [selectedLocation, setSelectedLocation] = useState([]);
   const [selectedIndustry, setSelectedIndustry] = useState([]);
+  const [searchHistory, setSearchHistory] = useState(() => getSearchHistory(CUSTOMER_SEARCH_HISTORY_KEY));
+  const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+  const [isExcelModalVisible, setIsExcelModalVisible] = useState(false);
+  const [importing, setImporting] = useState(false);
   const containerRef = useRef(null);
   const [displayCount, setDisplayCount] = useState(5);
 
-  const filteredCustomers = mockCustomers.filter(customer => {
+  const filteredCustomers = customers.filter(customer => {
     const industryTags = getCustomerIndustryTags(customer);
     const customTags = getCustomTags(customer);
     const selectedIndustryValues = getIndustryValuesByPath(selectedIndustry);
@@ -53,6 +59,21 @@ const CustomerList = () => {
   // 重置显示数量当筛选条件变化时
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
+    setDisplayCount(5);
+  };
+
+  const handleSearchSubmit = (value) => {
+    const trimmedValue = value.trim();
+    if (!trimmedValue) return;
+    setSearchText(trimmedValue);
+    setSearchHistory(addSearchHistory(CUSTOMER_SEARCH_HISTORY_KEY, trimmedValue));
+    setIsHistoryVisible(false);
+    setDisplayCount(5);
+  };
+
+  const handleHistorySelect = (keyword) => {
+    setSearchText(keyword);
+    setIsHistoryVisible(false);
     setDisplayCount(5);
   };
 
@@ -91,24 +112,85 @@ const CustomerList = () => {
       cancelText: '取消',
       okType: 'danger',
       onOk() {
-        Modal.success({
-          title: '删除成功',
-          content: `客户 "${customer.company_name}" 已被删除`
-        });
+        setCustomers(prevCustomers => prevCustomers.filter(item => item.id !== customer.id));
+        message.success(`客户 "${customer.company_name}" 已被删除`);
       }
     });
+  };
+
+  const handleImportFile = async (file) => {
+    setImporting(true);
+    try {
+      const { customers: importedCustomers, errors } = await parseCustomersFromExcel(file, {
+        baseId: Math.max(...customers.map(customer => customer.id), 0) + 1,
+        userId: user?.id
+      });
+
+      if (errors.length > 0) {
+        Modal.error({
+          title: '导入失败',
+          content: (
+            <div className="excel-error-list">
+              {errors.slice(0, 6).map(error => <div key={error}>{error}</div>)}
+              {errors.length > 6 && <div>还有 {errors.length - 6} 条错误，请检查模板内容。</div>}
+            </div>
+          )
+        });
+        return;
+      }
+
+      if (importedCustomers.length === 0) {
+        Modal.warning({
+          title: '未导入客户',
+          content: 'Excel 中没有可导入的客户数据，请填写模板后再导入。'
+        });
+        return;
+      }
+
+      setCustomers(prevCustomers => [...importedCustomers, ...prevCustomers]);
+      setDisplayCount(5);
+      setIsExcelModalVisible(false);
+      message.success(`成功导入 ${importedCustomers.length} 个客户`);
+    } catch (error) {
+      Modal.error({
+        title: '导入失败',
+        content: '无法读取该 Excel 文件，请使用下载的固定模板填写后再导入。'
+      });
+    } finally {
+      setImporting(false);
+    }
   };
 
   return (
     <div className="customer-list" ref={containerRef} onScroll={handleScroll}>
       <div className="search-section">
-        <Search
-          placeholder="搜索公司名称、地址或标签"
-          value={searchText}
-          onChange={handleSearchChange}
-          className="search-input"
-          allowClear
-        />
+        <div className="search-row">
+          <Search
+            placeholder="搜索公司名称、地址或标签"
+            value={searchText}
+            onChange={handleSearchChange}
+            onSearch={handleSearchSubmit}
+            onFocus={() => setIsHistoryVisible(true)}
+            onBlur={() => setTimeout(() => setIsHistoryVisible(false), 120)}
+            className="search-input"
+            allowClear
+          />
+        </div>
+        {isHistoryVisible && searchHistory.length > 0 && (
+          <div className="search-history-panel" onMouseDown={(e) => e.preventDefault()}>
+            <div className="search-history-title">最近搜索</div>
+            {searchHistory.map(keyword => (
+              <button
+                type="button"
+                key={keyword}
+                className="search-history-item"
+                onClick={() => handleHistorySelect(keyword)}
+              >
+                {keyword}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="filter-section">
@@ -272,12 +354,66 @@ const CustomerList = () => {
         </Empty>
       )}
       
-      <div 
-        className="floating-add-button"
-        onClick={() => navigate('/customers/create')}
-      >
-        <PlusOutlined />
+      <div className="floating-actions">
+        <button
+          type="button"
+          className="floating-action-button excel-action-button"
+          onClick={() => setIsExcelModalVisible(true)}
+          aria-label="批量导入导出客户"
+        >
+          <FileExcelOutlined />
+        </button>
+        <button
+          type="button"
+          className="floating-action-button add-action-button"
+          onClick={() => navigate('/customers/create')}
+          aria-label="新建客户"
+        >
+          <PlusOutlined />
+        </button>
       </div>
+
+      <Modal
+        title="客户批量导入/导出"
+        open={isExcelModalVisible}
+        onCancel={() => setIsExcelModalVisible(false)}
+        footer={null}
+        width={420}
+      >
+        <div className="excel-actions">
+          <Button
+            icon={<DownloadOutlined />}
+            onClick={downloadCustomerTemplate}
+            block
+          >
+            下载Excel模板
+          </Button>
+          <Upload
+            accept=".xlsx,.xls"
+            showUploadList={false}
+            beforeUpload={(file) => {
+              handleImportFile(file);
+              return false;
+            }}
+          >
+            <Button
+              type="primary"
+              icon={<UploadOutlined />}
+              loading={importing}
+              block
+            >
+              导入客户Excel
+            </Button>
+          </Upload>
+          <Button
+            icon={<FileExcelOutlined />}
+            onClick={() => exportCustomersToExcel(filteredCustomers)}
+            block
+          >
+            导出当前客户
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };

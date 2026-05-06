@@ -17,10 +17,12 @@ import MyPage from './pages/MyPage';
 import UserManagement from './pages/UserManagement';
 import CreateUser from './pages/CreateUser';
 import Login from './pages/Login';
+import { mockCustomers } from './mock/data';
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [customers, setCustomers] = useState(mockCustomers);
 
   const handleLogin = (userData) => {
     setUser(userData);
@@ -48,10 +50,10 @@ function App() {
                 <MainLayout user={user}>
                   <Routes>
                     <Route path="/" element={<Navigate to="/customers" replace />} />
-                    <Route path="/customers" element={<CustomerList />} />
-                    <Route path="/customers/create" element={<CustomerForm />} />
-                    <Route path="/customers/:id" element={<CustomerDetail />} />
-                    <Route path="/customers/:id/edit" element={<CustomerForm />} />
+                    <Route path="/customers" element={<CustomerList user={user} customers={customers} setCustomers={setCustomers} />} />
+                    <Route path="/customers/create" element={<CustomerForm customers={customers} />} />
+                    <Route path="/customers/:id" element={<CustomerDetail user={user} customers={customers} />} />
+                    <Route path="/customers/:id/edit" element={<CustomerForm customers={customers} />} />
                     <Route path="/opportunities" element={<OpportunityList />} />
                     <Route path="/opportunities/:id" element={<OpportunityDetail />} />
                     <Route path="/opportunities/create" element={<OpportunityForm />} />

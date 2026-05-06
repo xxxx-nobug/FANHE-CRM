@@ -116,3 +116,56 @@
   font-size: 12px;
   color: #9e9e9e;
 }
+
+.background-card {
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.background-card .ant-card-body {
+  padding: 14px;
+}
+
+.background-item {
+  padding: 12px 0 !important;
+}
+
+.background-item:first-child {
+  padding-top: 0 !important;
+}
+
+.background-item:last-child {
+  padding-bottom: 0 !important;
+}
+
+.background-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.background-author {
+  color: #424242;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.background-time {
+  color: #9e9e9e;
+  font-size: 12px;
+}
+
+.background-content {
+  margin-top: 6px;
+  color: #424242;
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.background-empty {
+  text-align: center;
+  padding: 18px 0;
+}

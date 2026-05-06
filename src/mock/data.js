@@ -47,6 +47,16 @@ export const mockCustomers = [
         description: 'AI平台建设项目',
         created_at: '2024-01-16 14:20:00'
       }
+    ],
+    background_notes: [
+      {
+        id: 1,
+        type: 'relationship',
+        content: '合作沟通较顺畅，技术负责人可直接推进需求确认，暂未发现明显付款风险。',
+        created_by: 1,
+        created_by_name: 'admin',
+        created_at: '2024-01-18 16:20:00'
+      }
     ]
   },
   {
@@ -79,7 +89,17 @@ export const mockCustomers = [
         relationship: '可约局'
       }
     ],
-    opportunities: []
+    opportunities: [],
+    background_notes: [
+      {
+        id: 2,
+        type: 'arrears',
+        content: '历史合作中曾出现账期延迟，后续报价建议明确付款节点和违约责任。',
+        created_by: 2,
+        created_by_name: 'zhangsan',
+        created_at: '2024-01-20 09:40:00'
+      }
+    ]
   },
   {
     id: 3,
