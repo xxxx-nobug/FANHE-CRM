@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Card, Button, Empty, Input, Spin } from 'antd';
-import { UserOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Card, Button, Empty, Input, Spin, Tag } from 'antd';
+import { UserOutlined, PlusOutlined, EditOutlined, DeleteOutlined, RiseOutlined, CalendarOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockOpportunities, mockUsers } from '../mock/data';
 import { addSearchHistory, getSearchHistory } from '../utils/searchHistory';
@@ -67,33 +67,46 @@ const OpportunityList = ({ user }) => {
 
   return (
     <div className="opportunity-list" ref={containerRef} onScroll={handleScroll}>
-      <div className="search-section">
-        <Search
-          placeholder="搜索客户名称或描述"
-          value={searchText}
-          onChange={handleSearchChange}
-          onSearch={handleSearchSubmit}
-          onFocus={() => setIsHistoryVisible(true)}
-          onBlur={() => setTimeout(() => setIsHistoryVisible(false), 120)}
-          className="search-input"
-          allowClear
-        />
-        {isHistoryVisible && searchHistory.length > 0 && (
-          <div className="search-history-panel" onMouseDown={(e) => e.preventDefault()}>
-            <div className="search-history-title">最近搜索</div>
-            {searchHistory.map(keyword => (
-              <button
-                type="button"
-                key={keyword}
-                className="search-history-item"
-                onClick={() => handleHistorySelect(keyword)}
-              >
-                {keyword}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      <section className="opportunity-page-hero">
+        <div className="opportunity-brand">
+          <span className="opportunity-brand-mark">泛</span>
+          <span>
+            <strong>泛和客商平台</strong>
+            <em>需求管理</em>
+          </span>
+        </div>
+        <div className="opportunity-panel-spacer" />
+      </section>
+
+      <section className="opportunity-filter-panel">
+        <div className="search-section">
+          <Search
+            placeholder="搜索客户名称或描述"
+            value={searchText}
+            onChange={handleSearchChange}
+            onSearch={handleSearchSubmit}
+            onFocus={() => setIsHistoryVisible(true)}
+            onBlur={() => setTimeout(() => setIsHistoryVisible(false), 120)}
+            className="search-input"
+            allowClear
+          />
+          {isHistoryVisible && searchHistory.length > 0 && (
+            <div className="search-history-panel" onMouseDown={(e) => e.preventDefault()}>
+              <div className="search-history-title">最近搜索</div>
+              {searchHistory.map(keyword => (
+                <button
+                  type="button"
+                  key={keyword}
+                  className="search-history-item"
+                  onClick={() => handleHistorySelect(keyword)}
+                >
+                  {keyword}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {displayOpportunities.length > 0 ? (
         <>
@@ -109,29 +122,7 @@ const OpportunityList = ({ user }) => {
                   <div className="company-name">
                     {opp.customer ? opp.customer.company_name : '尚未建档的客户'}
                   </div>
-                  <div className="action-buttons">
-                    <Button 
-                      type="link" 
-                      size="small"
-                      icon={<EditOutlined />}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/opportunities/${opp.id}/edit`);
-                      }}
-                    >
-                      编辑
-                    </Button>
-                    {canDelete && (
-                      <Button 
-                        type="link" 
-                        size="small"
-                        icon={<DeleteOutlined />}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        删除
-                      </Button>
-                    )}
-                  </div>
+                  <Tag color={opp.status === '签约' ? 'green' : 'blue'}>{opp.status}</Tag>
                 </div>
                 
                 <div className="description">
@@ -139,8 +130,34 @@ const OpportunityList = ({ user }) => {
                 </div>
 
                 <div className="meta-info">
+                  <span><RiseOutlined /> {opp.probability || 0}%</span>
                   <span><UserOutlined /> {getUserName(opp.updated_by)}</span>
-                  <span>{opp.updated_at}</span>
+                  <span><CalendarOutlined /> {opp.updated_at?.substring(0, 10)}</span>
+                </div>
+
+                <div className="action-buttons">
+                  <Button
+                    type="primary"
+                    size="small"
+                    icon={<EditOutlined />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/opportunities/${opp.id}/edit`);
+                    }}
+                  >
+                    编辑
+                  </Button>
+                  {canDelete && (
+                    <Button
+                      type="default"
+                      size="small"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      删除
+                    </Button>
+                  )}
                 </div>
               </div>
             </Card>

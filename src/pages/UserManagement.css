@@ -1,29 +1,38 @@
 .user-management {
-  padding-bottom: 20px;
-  max-height: calc(100vh - 140px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  margin: -2px 0 0;
+  padding-bottom: 16px;
 }
 
 .page-card {
-  border-radius: var(--radius-card);
+  border-radius: 14px;
   border: 1px solid var(--color-line);
   box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.page-card .ant-card-body {
+  padding: 16px;
 }
 
 .page-header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 14px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--color-line-soft);
+}
+
+.page-header .ant-btn {
+  padding: 0 4px 0 0;
+  color: var(--color-text);
+  font-weight: 600;
 }
 
 .page-header h2 {
   margin: 0;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 800;
   color: var(--color-ink);
 }
 
@@ -38,47 +47,53 @@
   border: none !important;
 }
 
-.user-info-card {
-  border-radius: var(--radius-control);
-  border: 1px solid var(--color-line-soft);
-  box-shadow: var(--shadow-soft);
+.management-user-card {
   width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
 }
 
-.user-info-card .ant-card-body {
-  padding: 12px 14px;
+.management-user-card .ant-card-body {
+  padding: 12px;
 }
 
-.user-content {
+.management-user-content {
   display: flex;
   align-items: flex-start;
   gap: 12px;
 }
 
-.user-avatar {
+.management-user-avatar {
   background: var(--color-primary);
   flex-shrink: 0;
 }
 
-.user-details {
+.management-user-details {
   flex: 1;
   min-width: 0;
 }
 
-.user-top {
+.management-user-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   margin-bottom: 6px;
 }
 
-.username {
-  font-size: 15px;
-  font-weight: 600;
+.management-username {
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 800;
   color: var(--color-ink);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.role-tag {
+.management-role-tag {
   font-size: 11px;
   line-height: 18px;
   padding: 0 8px;
@@ -86,14 +101,15 @@
   flex-shrink: 0;
 }
 
-.user-meta {
+.management-user-meta {
   font-size: 13px;
   color: var(--color-muted);
   margin-bottom: 8px;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
   line-height: 1.4;
+  min-width: 0;
 }
 
 .separator {
@@ -103,10 +119,13 @@
 
 .email-text {
   color: var(--color-soft);
-  word-break: break-all;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-.user-bottom {
+.management-user-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -119,26 +138,8 @@
   color: var(--color-soft);
 }
 
-.user-bottom .ant-btn {
+.management-user-bottom .ant-btn {
   padding: 0 4px;
   font-size: 12px;
   height: auto;
-}
-
-.loading-more {
-  text-align: center;
-  padding: 16px;
-  color: var(--color-soft);
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.load-complete {
-  text-align: center;
-  padding: 16px;
-  color: #a6b8c8;
-  font-size: 12px;
 }

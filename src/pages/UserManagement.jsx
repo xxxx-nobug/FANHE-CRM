@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { Card, List, Avatar, Tag, Button, Modal, Form, Input, message, Spin } from 'antd';
-import { UserOutlined, KeyOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Card, List, Avatar, Tag, Button, Modal, Form, Input } from 'antd';
+import { ArrowLeftOutlined, UserOutlined, KeyOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockUsers } from '../mock/data';
 import './UserManagement.css';
@@ -11,10 +11,6 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [passwordForm] = Form.useForm();
   
-  // 懒加载相关状态
-  const [displayCount, setDisplayCount] = useState(5); // 初始显示数量
-  const containerRef = useRef(null);
-
   const handleResetPassword = (user) => {
     setSelectedUser(user);
     setIsPasswordModalVisible(true);
@@ -29,25 +25,13 @@ const UserManagement = () => {
     passwordForm.resetFields();
   };
 
-  // 懒加载：监听滚动事件
-  const handleScroll = () => {
-    if (!containerRef.current) return;
-    
-    const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-    
-    // 当滚动到距离底部 100px 时触发加载
-    if (scrollHeight - (scrollTop + clientHeight) < 100 && displayCount < mockUsers.length) {
-      setDisplayCount(prev => Math.min(prev + 2, mockUsers.length));
-    }
-  };
-
   return (
-    <div className="user-management" ref={containerRef} onScroll={handleScroll}>
+    <div className="user-management">
       <Card className="page-card">
         <div className="page-header">
           <Button 
             type="text" 
-            icon={<UserOutlined />}
+            icon={<ArrowLeftOutlined />}
             onClick={() => navigate('/my')}
           >
             返回
@@ -56,25 +40,25 @@ const UserManagement = () => {
         </div>
 
         <List
-          dataSource={mockUsers.slice(0, displayCount)}
+          dataSource={mockUsers}
           renderItem={(user, index) => (
-            <List.Item className="user-card">
-              <Card className="user-info-card" hoverable>
-                <div className="user-content">
-                  <Avatar icon={<UserOutlined />} size={36} className="user-avatar" />
-                  <div className="user-details">
-                    <div className="user-top">
-                      <span className="username">{user.username}</span>
-                      <Tag color={user.role === 'admin' ? 'red' : 'blue'} className="role-tag">
+            <List.Item className="management-user-item">
+              <Card className="management-user-card" hoverable>
+                <div className="management-user-content">
+                  <Avatar icon={<UserOutlined />} size={36} className="management-user-avatar" />
+                  <div className="management-user-details">
+                    <div className="management-user-top">
+                      <span className="management-username">{user.username}</span>
+                      <Tag color={user.role === 'admin' ? 'red' : 'blue'} className="management-role-tag">
                         {user.role === 'admin' ? '管理员' : '录入员'}
                       </Tag>
                     </div>
-                    <div className="user-meta">
+                    <div className="management-user-meta">
                       <span>{user.unit}</span>
                       <span className="separator">|</span>
                       <span className="email-text">{user.email}</span>
                     </div>
-                    <div className="user-bottom">
+                    <div className="management-user-bottom">
                       <span className="create-time">{user.created_at?.substring(0, 10)}</span>
                       <Button 
                         type="link" 
@@ -92,19 +76,6 @@ const UserManagement = () => {
           )}
           className="user-list"
         />
-
-        {displayCount < mockUsers.length && (
-          <div className="loading-more">
-            <Spin size="small" />
-            <span>向下滚动加载更多</span>
-          </div>
-        )}
-
-        {displayCount >= mockUsers.length && mockUsers.length > 3 && (
-          <div className="load-complete">
-            <span>— 已全部加载 —</span>
-          </div>
-        )}
       </Card>
 
       <Modal

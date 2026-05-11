@@ -187,65 +187,78 @@ const CustomerList = ({ user, customers, setCustomers }) => {
 
   return (
     <div className="customer-list" ref={containerRef} onScroll={handleScroll}>
-      <div className="search-section">
-        <div className="search-row">
-          <Search
-            placeholder="搜索公司名称、地址或标签"
-            value={searchText}
-            onChange={handleSearchChange}
-            onSearch={handleSearchSubmit}
-            onFocus={() => setIsHistoryVisible(true)}
-            onBlur={() => setTimeout(() => setIsHistoryVisible(false), 120)}
-            className="search-input"
+      <section className="customer-page-hero">
+        <div className="customer-brand">
+          <span className="customer-brand-mark">泛</span>
+          <span>
+            <strong>泛和客商平台</strong>
+            <em>客户管理</em>
+          </span>
+        </div>
+        <div className="customer-panel-spacer" />
+      </section>
+
+      <section className="customer-filter-panel">
+        <div className="search-section">
+          <div className="search-row">
+            <Search
+              placeholder="搜索公司名称、地址或标签"
+              value={searchText}
+              onChange={handleSearchChange}
+              onSearch={handleSearchSubmit}
+              onFocus={() => setIsHistoryVisible(true)}
+              onBlur={() => setTimeout(() => setIsHistoryVisible(false), 120)}
+              className="search-input"
+              allowClear
+            />
+          </div>
+          {isHistoryVisible && searchHistory.length > 0 && (
+            <div className="search-history-panel" onMouseDown={(e) => e.preventDefault()}>
+              <div className="search-history-title">最近搜索</div>
+              {searchHistory.map(keyword => (
+                <button
+                  type="button"
+                  key={keyword}
+                  className="search-history-item"
+                  onClick={() => handleHistorySelect(keyword)}
+                >
+                  {keyword}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="filter-section">
+          <Cascader
+            className="filter-cascader"
+            options={locationOptions}
+            value={selectedLocation}
+            onChange={handleLocationChange}
+            placeholder="省市/国家"
             allowClear
+            changeOnSelect
+            showSearch
+            expandTrigger="click"
+            displayRender={(labels) => labels[0] === labels[1] ? labels[0] : labels.join(' / ')}
+            placement="bottomLeft"
+            getPopupContainer={() => containerRef.current || document.body}
+          />
+          <Cascader
+            className="filter-cascader"
+            options={industryOptions}
+            value={selectedIndustry}
+            onChange={handleIndustryChange}
+            placeholder="行业标签"
+            allowClear
+            changeOnSelect
+            showSearch
+            expandTrigger="click"
+            placement="bottomLeft"
+            getPopupContainer={() => containerRef.current || document.body}
           />
         </div>
-        {isHistoryVisible && searchHistory.length > 0 && (
-          <div className="search-history-panel" onMouseDown={(e) => e.preventDefault()}>
-            <div className="search-history-title">最近搜索</div>
-            {searchHistory.map(keyword => (
-              <button
-                type="button"
-                key={keyword}
-                className="search-history-item"
-                onClick={() => handleHistorySelect(keyword)}
-              >
-                {keyword}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="filter-section">
-        <Cascader
-          className="filter-cascader"
-          options={locationOptions}
-          value={selectedLocation}
-          onChange={handleLocationChange}
-          placeholder="省市/国家"
-          allowClear
-          changeOnSelect
-          showSearch
-          expandTrigger="click"
-          displayRender={(labels) => labels[0] === labels[1] ? labels[0] : labels.join(' / ')}
-          placement="bottomLeft"
-          getPopupContainer={() => containerRef.current || document.body}
-        />
-        <Cascader
-          className="filter-cascader"
-          options={industryOptions}
-          value={selectedIndustry}
-          onChange={handleIndustryChange}
-          placeholder="行业标签"
-          allowClear
-          changeOnSelect
-          showSearch
-          expandTrigger="click"
-          placement="bottomLeft"
-          getPopupContainer={() => containerRef.current || document.body}
-        />
-      </div>
+      </section>
 
       {displayCustomers.length > 0 ? (
         <>

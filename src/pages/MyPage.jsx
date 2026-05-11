@@ -95,9 +95,20 @@ const MyPage = ({ user, notifications = [], onLogout }) => {
 
   return (
     <div className="my-page">
+      <section className="my-page-hero">
+        <div className="my-brand">
+          <span className="my-brand-mark">泛</span>
+          <span>
+            <strong>泛和客商平台</strong>
+            <em>我的</em>
+          </span>
+        </div>
+        <div className="my-panel-spacer" />
+      </section>
+
       <Card className="user-card">
         <div className="user-header">
-          <Avatar size={80} icon={<UserOutlined />} className="user-avatar" />
+          <Avatar size={58} icon={<UserOutlined />} className="user-avatar" />
           <div className="user-info">
             <h2>{user?.username}</h2>
             <p className="user-unit">{user?.unit}</p>
@@ -117,7 +128,7 @@ const MyPage = ({ user, notifications = [], onLogout }) => {
 
       {filteredMenuItems.length > 0 && (
         <>
-          <Divider>管理功能</Divider>
+          <div className="section-label">管理功能</div>
           <Card className="menu-card">
             <List
               dataSource={filteredMenuItems}
@@ -182,7 +193,7 @@ const MyPage = ({ user, notifications = [], onLogout }) => {
         </Form>
       </Modal>
       
-     <Divider/>
+      <Divider className="logout-divider" />
       <Button 
           type="primary" 
           danger 

@@ -127,11 +127,15 @@ const ReportDashboard = () => {
 
   return (
     <div className="report-dashboard">
-      <section className="report-overview">
-        <div>
-          <h2>统计工作台</h2>
+      <section className="report-page-hero">
+        <div className="report-brand">
+          <span className="report-brand-mark">泛</span>
+          <span>
+            <strong>泛和客商平台</strong>
+            <em>统计工作台</em>
+          </span>
         </div>
-        <BarChartOutlined />
+        <div className="report-panel-spacer" />
       </section>
 
       <section className="report-summary-grid">
