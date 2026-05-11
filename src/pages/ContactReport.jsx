@@ -9,6 +9,7 @@ const ContactReport = () => {
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const [displayCount, setDisplayCount] = useState(5);
+  const [activeFilter, setActiveFilter] = useState('all');
 
   // 分析相同联系方式的联系人
   const phoneGroups = {};
@@ -69,8 +70,26 @@ const ContactReport = () => {
     ...duplicateEmailGroups
   ].sort((a, b) => b.count - a.count);
 
-  const displayGroups = allGroups.slice(0, displayCount);
-  const duplicateContactTotal = allGroups.reduce((sum, group) => sum + group.count, 0);
+  const highRiskGroups = allGroups.filter(group => group.count >= 3);
+  const filteredGroups = allGroups.filter(group => {
+    if (activeFilter === 'phone') return group.type === 'phone';
+    if (activeFilter === 'email') return group.type === 'email';
+    if (activeFilter === 'risk') return group.count >= 3;
+    return true;
+  });
+  const displayGroups = filteredGroups.slice(0, displayCount);
+
+  const metricFilters = [
+    { key: 'all', label: '全部重复', value: allGroups.length },
+    { key: 'phone', label: '电话重复', value: duplicatePhoneGroups.length },
+    { key: 'email', label: '邮箱重复', value: duplicateEmailGroups.length },
+    { key: 'risk', label: '高风险组', value: highRiskGroups.length }
+  ];
+
+  const handleFilterChange = (filterKey) => {
+    setActiveFilter(filterKey);
+    setDisplayCount(5);
+  };
 
   // 懒加载：监听滚动事件
   const handleScroll = () => {
@@ -78,8 +97,8 @@ const ContactReport = () => {
     
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
     
-    if (scrollHeight - (scrollTop + clientHeight) < 100 && displayCount < allGroups.length) {
-      setDisplayCount(prev => Math.min(prev + 3, allGroups.length));
+    if (scrollHeight - (scrollTop + clientHeight) < 100 && displayCount < filteredGroups.length) {
+      setDisplayCount(prev => Math.min(prev + 3, filteredGroups.length));
     }
   };
 
@@ -101,22 +120,17 @@ const ContactReport = () => {
       </div>
 
       <div className="summary-grid">
-        <Card className="summary-card primary">
-          <span>重复组数</span>
-          <strong>{allGroups.length}</strong>
-        </Card>
-        <Card className="summary-card">
-          <span>电话组</span>
-          <strong>{duplicatePhoneGroups.length}</strong>
-        </Card>
-        <Card className="summary-card">
-          <span>邮箱组</span>
-          <strong>{duplicateEmailGroups.length}</strong>
-        </Card>
-        <Card className="summary-card">
-          <span>涉及联系人</span>
-          <strong>{duplicateContactTotal}</strong>
-        </Card>
+        {metricFilters.map(metric => (
+          <button
+            key={metric.key}
+            type="button"
+            className={`summary-card metric-filter ${activeFilter === metric.key ? 'active' : ''}`}
+            onClick={() => handleFilterChange(metric.key)}
+          >
+            <span>{metric.label}</span>
+            <strong>{metric.value}</strong>
+          </button>
+        ))}
       </div>
 
       <div className="groups-container">
@@ -179,20 +193,20 @@ const ContactReport = () => {
         ))}
       </div>
 
-      {allGroups.length === 0 && (
+      {filteredGroups.length === 0 && (
         <div className="empty-state">
-          <p>暂无相同联系方式的联系人</p>
+          <p>暂无符合条件的相同联系方式</p>
         </div>
       )}
 
-      {displayCount < allGroups.length && (
+      {displayCount < filteredGroups.length && (
         <div className="loading-more">
           <Spin size="small" />
           <span>向下滚动加载更多</span>
         </div>
       )}
 
-      {displayCount >= allGroups.length && allGroups.length > 5 && (
+      {displayCount >= filteredGroups.length && filteredGroups.length > 5 && (
         <div className="load-complete">
           <span>— 已全部加载 —</span>
         </div>

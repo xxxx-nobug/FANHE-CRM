@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Descriptions, Tag, Button, List, Avatar, message, Modal, Form, Input, Select } from 'antd';
-import { EnvironmentOutlined, PhoneOutlined, MailOutlined, EditOutlined, PlusOutlined, UserOutlined, WarningOutlined, CheckCircleOutlined, MessageOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, EnvironmentOutlined, PhoneOutlined, MailOutlined, EditOutlined, PlusOutlined, UserOutlined, WarningOutlined, CheckCircleOutlined, MessageOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCustomerIndustryTags, getCustomerLocationLabel, getCustomTags } from '../constants/customerDictionaries';
 import './CustomerDetail.css';
@@ -129,6 +129,13 @@ const CustomerDetail = ({ user, customers }) => {
     <div className="customer-detail">
       <Card className="detail-card">
         <div className="detail-header">
+          <Button
+            type="text"
+            icon={<ArrowLeftOutlined />}
+            onClick={() => navigate('/customers')}
+          >
+            返回
+          </Button>
           <h2>{customer.company_name}</h2>
           <div className="location">
             <EnvironmentOutlined /> {getCustomerLocationLabel(customer)}

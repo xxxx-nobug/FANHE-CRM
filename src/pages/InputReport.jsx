@@ -9,6 +9,7 @@ const InputReport = () => {
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const [displayCount, setDisplayCount] = useState(10);
+  const [activeFilter, setActiveFilter] = useState('active');
 
   const inputStats = {};
   
@@ -41,19 +42,37 @@ const InputReport = () => {
       rank: index + 1
     }));
 
-  const displayData = inputReportData.slice(0, displayCount);
   const totalCustomerInput = inputReportData.reduce((sum, item) => sum + item.customerCount, 0);
   const totalOpportunityInput = inputReportData.reduce((sum, item) => sum + item.opportunityCount, 0);
   const activeInputUsers = inputReportData.filter(item => item.customerCount > 0 || item.opportunityCount > 0).length;
   const topInputUser = inputReportData.find(item => item.customerCount > 0 || item.opportunityCount > 0);
+  const filteredData = inputReportData.filter(item => {
+    if (activeFilter === 'customers') return item.customerCount > 0;
+    if (activeFilter === 'opportunities') return item.opportunityCount > 0;
+    if (activeFilter === 'top') return item.id === topInputUser?.id;
+    return item.customerCount > 0 || item.opportunityCount > 0;
+  });
+  const displayData = filteredData.slice(0, displayCount);
+
+  const metricFilters = [
+    { key: 'customers', label: '客户录入', value: totalCustomerInput },
+    { key: 'opportunities', label: '需求录入', value: totalOpportunityInput },
+    { key: 'active', label: '活跃人员', value: activeInputUsers },
+    { key: 'top', label: '最高录入', value: topInputUser?.customerCount || 0 }
+  ];
+
+  const handleFilterChange = (filterKey) => {
+    setActiveFilter(filterKey);
+    setDisplayCount(10);
+  };
 
   const handleScroll = () => {
     if (!containerRef.current) return;
     
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
     
-    if (scrollHeight - (scrollTop + clientHeight) < 100 && displayCount < inputReportData.length) {
-      setDisplayCount(prev => Math.min(prev + 5, inputReportData.length));
+    if (scrollHeight - (scrollTop + clientHeight) < 100 && displayCount < filteredData.length) {
+      setDisplayCount(prev => Math.min(prev + 5, filteredData.length));
     }
   };
 
@@ -82,22 +101,17 @@ const InputReport = () => {
       </div>
 
       <div className="summary-grid">
-        <Card className="summary-card primary">
-          <span>客户录入</span>
-          <strong>{totalCustomerInput}</strong>
-        </Card>
-        <Card className="summary-card">
-          <span>需求录入</span>
-          <strong>{totalOpportunityInput}</strong>
-        </Card>
-        <Card className="summary-card">
-          <span>活跃人员</span>
-          <strong>{activeInputUsers}</strong>
-        </Card>
-        <Card className="summary-card">
-          <span>最高录入</span>
-          <strong>{topInputUser?.customerCount || 0}</strong>
-        </Card>
+        {metricFilters.map(metric => (
+          <button
+            key={metric.key}
+            type="button"
+            className={`summary-card metric-filter ${activeFilter === metric.key ? 'active' : ''}`}
+            onClick={() => handleFilterChange(metric.key)}
+          >
+            <span>{metric.label}</span>
+            <strong>{metric.value}</strong>
+          </button>
+        ))}
       </div>
 
       {displayData.length > 0 ? (
@@ -141,14 +155,14 @@ const InputReport = () => {
             </Card>
           ))}
 
-          {displayCount < inputReportData.length && (
+          {displayCount < filteredData.length && (
             <div className="loading-more">
               <Spin size="small" />
               <span>向下滚动加载更多</span>
             </div>
           )}
 
-          {displayCount >= inputReportData.length && inputReportData.length > 10 && (
+          {displayCount >= filteredData.length && filteredData.length > 10 && (
             <div className="load-complete">
               <span>— 已全部加载 —</span>
             </div>

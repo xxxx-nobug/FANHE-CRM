@@ -10,6 +10,7 @@ const OpportunityReport = () => {
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const [displayCount, setDisplayCount] = useState(10);
+  const [activeFilter, setActiveFilter] = useState('all');
 
   const customerOpportunityCount = {};
   
@@ -41,19 +42,37 @@ const OpportunityReport = () => {
       rank: index + 1
     }));
 
-  const displayData = customerOpportunityData.slice(0, displayCount);
   const totalOpportunityCount = mockOpportunities.length;
   const customerWithOpportunityCount = customerOpportunityData.filter(item => item.id !== 0 && item.count > 0).length;
   const unfiledOpportunityCount = customerOpportunityData.find(item => item.id === 0)?.count || 0;
   const topCustomer = customerOpportunityData.find(item => item.id !== 0 && item.count > 0);
+  const filteredData = customerOpportunityData.filter(item => {
+    if (activeFilter === 'withOpportunity') return item.id !== 0 && item.count > 0;
+    if (activeFilter === 'unfiled') return item.id === 0 && item.count > 0;
+    if (activeFilter === 'top') return item.id === topCustomer?.id;
+    return true;
+  });
+  const displayData = filteredData.slice(0, displayCount);
+
+  const metricFilters = [
+    { key: 'all', label: '全部需求', value: totalOpportunityCount },
+    { key: 'withOpportunity', label: '有需求客户', value: customerWithOpportunityCount },
+    { key: 'unfiled', label: '未建档需求', value: unfiledOpportunityCount },
+    { key: 'top', label: '最高客户', value: topCustomer?.count || 0 }
+  ];
+
+  const handleFilterChange = (filterKey) => {
+    setActiveFilter(filterKey);
+    setDisplayCount(10);
+  };
 
   const handleScroll = () => {
     if (!containerRef.current) return;
     
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
     
-    if (scrollHeight - (scrollTop + clientHeight) < 100 && displayCount < customerOpportunityData.length) {
-      setDisplayCount(prev => Math.min(prev + 5, customerOpportunityData.length));
+    if (scrollHeight - (scrollTop + clientHeight) < 100 && displayCount < filteredData.length) {
+      setDisplayCount(prev => Math.min(prev + 5, filteredData.length));
     }
   };
 
@@ -88,22 +107,17 @@ const OpportunityReport = () => {
       </div>
 
       <div className="summary-grid">
-        <Card className="summary-card primary">
-          <span>需求总数</span>
-          <strong>{totalOpportunityCount}</strong>
-        </Card>
-        <Card className="summary-card">
-          <span>有需求客户</span>
-          <strong>{customerWithOpportunityCount}</strong>
-        </Card>
-        <Card className="summary-card">
-          <span>未建档需求</span>
-          <strong>{unfiledOpportunityCount}</strong>
-        </Card>
-        <Card className="summary-card">
-          <span>最高客户</span>
-          <strong>{topCustomer?.count || 0}</strong>
-        </Card>
+        {metricFilters.map(metric => (
+          <button
+            key={metric.key}
+            type="button"
+            className={`summary-card metric-filter ${activeFilter === metric.key ? 'active' : ''}`}
+            onClick={() => handleFilterChange(metric.key)}
+          >
+            <span>{metric.label}</span>
+            <strong>{metric.value}</strong>
+          </button>
+        ))}
       </div>
 
       {displayData.length > 0 ? (
@@ -144,14 +158,14 @@ const OpportunityReport = () => {
             </Card>
           ))}
 
-          {displayCount < customerOpportunityData.length && (
+          {displayCount < filteredData.length && (
             <div className="loading-more">
               <Spin size="small" />
               <span>向下滚动加载更多</span>
             </div>
           )}
 
-          {displayCount >= customerOpportunityData.length && customerOpportunityData.length > 10 && (
+          {displayCount >= filteredData.length && filteredData.length > 10 && (
             <div className="load-complete">
               <span>— 已全部加载 —</span>
             </div>

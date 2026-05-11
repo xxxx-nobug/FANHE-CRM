@@ -36,13 +36,14 @@
 }
 
 .summary-card {
+  width: 100%;
+  padding: 11px 12px;
   border-radius: var(--radius-card);
   border: 1px solid var(--color-line);
+  background: #fff;
   box-shadow: var(--shadow-soft);
-}
-
-.summary-card .ant-card-body {
-  padding: 11px 12px;
+  text-align: left;
+  cursor: pointer;
 }
 
 .summary-card span {
@@ -58,13 +59,17 @@
   line-height: 1;
 }
 
-.summary-card.primary {
+.summary-card.active {
   background: var(--color-primary-soft);
   border-color: var(--tag-blue-border);
 }
 
-.summary-card.primary strong {
+.summary-card.active strong {
   color: var(--color-primary);
+}
+
+.metric-filter:active {
+  transform: scale(0.98);
 }
 
 .groups-container {

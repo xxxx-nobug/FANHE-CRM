@@ -16,17 +16,10 @@
 }
 
 .report-overview h2 {
-  margin: 0 0 5px;
+  margin: 0;
   color: var(--color-ink);
   font-size: 18px;
   font-weight: 700;
-}
-
-.report-overview p {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: 13px;
-  line-height: 1.5;
 }
 
 .report-overview > svg {
@@ -116,23 +109,12 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 5px;
 }
 
 .module-title-row strong {
   color: var(--color-ink);
   font-size: 15px;
   font-weight: 700;
-}
-
-.module-desc {
-  display: block;
-  color: var(--color-muted);
-  font-size: 12px;
-  line-height: 1.45;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 
 .module-metric {
@@ -177,16 +159,10 @@
 }
 
 .preview-header h3 {
-  margin: 0 0 4px;
+  margin: 0;
   color: var(--color-ink);
   font-size: 15px;
   font-weight: 700;
-}
-
-.preview-header p {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: 12px;
 }
 
 .preview-list {
@@ -200,7 +176,7 @@
   align-items: center;
   gap: 9px;
   width: 100%;
-  min-height: 44px;
+  min-height: 38px;
   padding: 8px 0;
   border: 0;
   border-bottom: 1px solid var(--color-line-soft);
@@ -226,17 +202,6 @@
   display: block;
   color: var(--color-ink);
   font-size: 13px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.preview-row em {
-  display: block;
-  margin-top: 3px;
-  color: var(--color-muted);
-  font-size: 12px;
-  font-style: normal;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

@@ -130,7 +130,6 @@ const ReportDashboard = () => {
       <section className="report-overview">
         <div>
           <h2>统计工作台</h2>
-          <p>按管理场景查看客户、需求和数据质量情况</p>
         </div>
         <BarChartOutlined />
       </section>
@@ -168,7 +167,6 @@ const ReportDashboard = () => {
                 <strong>{item.title}</strong>
                 <Tag color="blue">{item.tag}</Tag>
               </span>
-              <span className="module-desc">{item.desc}</span>
             </span>
             <span className="module-metric">
               <strong>{item.value}</strong>
@@ -183,7 +181,6 @@ const ReportDashboard = () => {
         <div className="preview-header">
           <div>
             <h3>重点关注</h3>
-            <p>展示当前最需要被查看的统计线索</p>
           </div>
         </div>
 
@@ -198,7 +195,6 @@ const ReportDashboard = () => {
               <TeamOutlined />
               <span>
                 <strong>{item.company_name}</strong>
-                <em>需求数量较多，建议持续跟进</em>
               </span>
               <Tag color="blue">{item.count} 条</Tag>
             </button>
@@ -214,7 +210,6 @@ const ReportDashboard = () => {
               <UserSwitchOutlined />
               <span>
                 <strong>{item.username}</strong>
-                <em>{item.unit}，当前录入活跃度最高</em>
               </span>
               <Tag color="green">{item.customerCount + item.opportunityCount} 条</Tag>
             </button>
@@ -230,7 +225,6 @@ const ReportDashboard = () => {
               <FileSearchOutlined />
               <span>
                 <strong>{item.value}</strong>
-                <em>{item.type} 被多个联系人使用，建议核对</em>
               </span>
               <Tag color="red">{item.contacts.length} 人</Tag>
             </button>
