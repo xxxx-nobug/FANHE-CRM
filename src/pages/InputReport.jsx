@@ -1,12 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { Card, Button, Spin, Tag } from 'antd';
-import { ArrowLeftOutlined, UserOutlined, TeamOutlined, RiseOutlined, BankOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { Card, Spin, Tag } from 'antd';
+import { UserOutlined, TeamOutlined, RiseOutlined, BankOutlined } from '@ant-design/icons';
 import { mockCustomers, mockOpportunities, mockUsers } from '../mock/data';
 import './InputReport.css';
 
 const InputReport = () => {
-  const navigate = useNavigate();
   const containerRef = useRef(null);
   const [displayCount, setDisplayCount] = useState(10);
   const [activeFilter, setActiveFilter] = useState('active');
@@ -86,13 +84,6 @@ const InputReport = () => {
   return (
     <div className="input-report" ref={containerRef} onScroll={handleScroll}>
       <div className="report-header">
-        <Button 
-          type="text" 
-          icon={<ArrowLeftOutlined />}
-          onClick={() => navigate('/reports')}
-        >
-          返回
-        </Button>
         <h2>录入统计</h2>
       </div>
 

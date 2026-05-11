@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Card, List, Avatar, Tag, Button, Modal, Form, Input } from 'antd';
-import { ArrowLeftOutlined, UserOutlined, KeyOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { UserOutlined, KeyOutlined } from '@ant-design/icons';
 import { mockUsers } from '../mock/data';
 import './UserManagement.css';
 
 const UserManagement = () => {
-  const navigate = useNavigate();
   const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [passwordForm] = Form.useForm();
@@ -29,13 +27,6 @@ const UserManagement = () => {
     <div className="user-management">
       <Card className="page-card">
         <div className="page-header">
-          <Button 
-            type="text" 
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate('/my')}
-          >
-            返回
-          </Button>
           <h2>用户管理</h2>
         </div>
 

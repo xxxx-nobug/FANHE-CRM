@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Form, Select, Input, Button, message, Mentions } from 'antd';
-import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
+import { SaveOutlined } from '@ant-design/icons';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { mockCustomers, mockOpportunities, mockUsers } from '../mock/data';
 import './OpportunityForm.css';
@@ -55,13 +55,6 @@ const OpportunityForm = () => {
     <div className="opportunity-form">
       <Card className="form-card">
         <div className="form-header">
-          <Button 
-            type="text" 
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate(-1)}
-          >
-            返回
-          </Button>
           <h2>{isEdit ? '编辑需求' : '新建需求'}</h2>
         </div>
 

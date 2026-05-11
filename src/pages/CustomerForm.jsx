@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Form, Input, Select, InputNumber, Upload, Button, message, Cascader } from 'antd';
-import { UploadOutlined, ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
+import { UploadOutlined, SaveOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   FOREIGN_LOCATION_VALUE,
@@ -119,13 +119,6 @@ const CustomerForm = ({ user, customers = [], setCustomers, setNotifications }) 
     <div className="customer-form">
       <Card className="form-card">
         <div className="form-header">
-          <Button 
-            type="text" 
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate(-1)}
-          >
-            返回
-          </Button>
           <h2>{isEdit ? '编辑客户' : '新建客户'}</h2>
         </div>
 

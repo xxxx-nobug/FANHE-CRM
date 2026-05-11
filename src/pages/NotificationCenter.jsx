@@ -1,7 +1,6 @@
 import React from 'react';
 import { Avatar, Button, Card, Empty, List, Tag } from 'antd';
-import { ArrowLeftOutlined, BellOutlined, CheckCircleOutlined, TeamOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { BellOutlined, CheckCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import './NotificationCenter.css';
 
 const notificationTypeConfig = {
@@ -27,7 +26,6 @@ const isVisibleToUser = (notification, user) => {
 const isUnread = (notification, user) => !(notification.read_by || []).includes(user?.id);
 
 const NotificationCenter = ({ user, notifications = [], setNotifications }) => {
-  const navigate = useNavigate();
   const visibleNotifications = notifications
     .filter(notification => isVisibleToUser(notification, user))
     .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
@@ -63,13 +61,6 @@ const NotificationCenter = ({ user, notifications = [], setNotifications }) => {
     <div className="notification-center">
       <Card className="notification-header-card">
         <div className="notification-header">
-          <Button
-            type="text"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate('/my')}
-          >
-            返回
-          </Button>
           <div className="notification-title">
             <h2>通知消息</h2>
             <span>{unreadCount > 0 ? `${unreadCount} 条未读` : '暂无未读'}</span>

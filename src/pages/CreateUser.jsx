@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { Card, Form, Input, Select, Button, message } from 'antd';
-import { ArrowLeftOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { mockUsers } from '../mock/data';
+import { SaveOutlined, PlusOutlined } from '@ant-design/icons';
 import './CreateUser.css';
 
 const { Option } = Select;
 
 const CreateUser = () => {
-  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
@@ -35,13 +32,6 @@ const CreateUser = () => {
     <div className="create-user">
       <Card className="form-card">
         <div className="form-header">
-          <Button 
-            type="text" 
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate('/my')}
-          >
-            返回
-          </Button>
           <h2>创建新用户</h2>
         </div>
 

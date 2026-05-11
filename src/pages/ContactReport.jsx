@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Card, Button, Badge, List, Avatar, Tag, Spin } from 'antd';
-import { ArrowLeftOutlined, PhoneOutlined, MailOutlined, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { Card, Badge, List, Avatar, Tag, Spin } from 'antd';
+import { PhoneOutlined, MailOutlined, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockCustomers } from '../mock/data';
 import './ContactReport.css';
@@ -105,13 +105,6 @@ const ContactReport = () => {
   return (
     <div className="contact-report" ref={containerRef} onScroll={handleScroll}>
       <div className="report-header">
-        <Button
-          type="text"
-          icon={<ArrowLeftOutlined />}
-          onClick={() => navigate('/reports')}
-        >
-          返回
-        </Button>
         <h2>相同联系方式分析</h2>
       </div>
 

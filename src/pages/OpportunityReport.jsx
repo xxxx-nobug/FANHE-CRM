@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Card, Button, Spin, Tag } from 'antd';
-import { ArrowLeftOutlined, EnvironmentOutlined, BarChartOutlined } from '@ant-design/icons';
+import { Card, Spin, Tag } from 'antd';
+import { EnvironmentOutlined, BarChartOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { mockCustomers, mockOpportunities } from '../mock/data';
 import { getCustomerLocationLabel } from '../constants/customerDictionaries';
@@ -92,13 +92,6 @@ const OpportunityReport = () => {
   return (
     <div className="opportunity-report" ref={containerRef} onScroll={handleScroll}>
       <div className="report-header">
-        <Button 
-          type="text" 
-          icon={<ArrowLeftOutlined />}
-          onClick={() => navigate('/reports')}
-        >
-          返回
-        </Button>
         <h2>需求统计</h2>
       </div>
 

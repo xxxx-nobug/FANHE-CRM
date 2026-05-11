@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Avatar, Button, Card, Descriptions, Divider, Form, List, Mentions, Modal, Tag, message } from 'antd';
-import { ArrowLeftOutlined, CalendarOutlined, DeleteOutlined, EditOutlined, MessageOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons';
+import { CalendarOutlined, DeleteOutlined, EditOutlined, MessageOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockOpportunities, mockUsers } from '../mock/data';
 import './OpportunityDetail.css';
@@ -82,13 +82,6 @@ const OpportunityDetail = ({ user }) => {
     <div className="opportunity-detail">
       <Card className="detail-card">
         <div className="detail-header">
-          <Button 
-            type="text" 
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate('/opportunities')}
-          >
-            返回
-          </Button>
           <h2>{opportunity.title}</h2>
         </div>
 
