@@ -908,8 +908,62 @@ const attachOpportunitiesToCustomer = (customer) => {
 const getOpportunityFollowNotes = (opportunity) => opportunity.follow_notes || [];
 
 mockCustomers.push(...expandedCustomers)
+const customerRouteTags = {
+  1: ['北美航线', '欧洲航线'],
+  2: ['地中海航线', '欧洲航线'],
+  3: ['北美航线', '日韩航线'],
+  4: ['东南亚航线', '中东航线'],
+  5: ['东南亚航线'],
+  6: ['日韩航线', '东南亚航线'],
+  7: ['南美航线'],
+  8: ['中东航线', '非洲航线'],
+  9: ['地中海航线'],
+  10: ['澳新航线', '东南亚航线'],
+  11: ['南美航线', '北美航线'],
+  12: ['非洲航线', '中东航线'],
+  13: ['地中海航线', '中东航线'],
+  14: ['中东航线', '非洲航线'],
+  15: ['南美航线', '地中海航线'],
+  16: ['日韩航线', '东南亚航线'],
+  17: ['非洲航线', '红海航线'],
+  18: ['中东航线', '黑海航线'],
+  19: ['南美航线', '东南亚航线'],
+  20: ['东南亚航线', '澳新航线']
+}
+
+const customerCustomTags = {
+  1: ['数字化客户', '重点跟进'],
+  2: ['贸易货主', '项目货客户'],
+  3: ['海外客户', '平台客户'],
+  4: ['潜在客户', '特种箱船东'],
+  5: ['数字化客户', '长期合作'],
+  6: ['关联客户', '冷藏箱客户'],
+  7: ['散货船东', '需重点跟进'],
+  8: ['危险品客户', '中东货源'],
+  9: ['软件客户', '集装箱船东'],
+  10: ['潜在客户', '澳新货源'],
+  11: ['北美货源', '大宗货主'],
+  12: ['非洲货源', '风控关注'],
+  13: ['重点客户', '散货船东'],
+  14: ['船代资源', '需重点跟进'],
+  15: ['特种箱船东', '项目货客户'],
+  16: ['长期合作', '冷藏箱客户'],
+  17: ['船供资源', '潜在客户'],
+  18: ['散货船东', '风控关注'],
+  19: ['冷链客户', '南美货源'],
+  20: ['海外客户', '集装箱船东']
+}
+
 mockCustomers.forEach((customer, index) => {
-  mockCustomers[index] = attachOpportunitiesToCustomer(customer)
+  const existingCustomTags = customer.tags
+    ? customer.tags.split(',').map(tag => tag.trim()).filter(Boolean)
+    : [];
+  const mergedCustomTags = [...new Set([...existingCustomTags, ...(customerCustomTags[customer.id] || [])])];
+  mockCustomers[index] = attachOpportunitiesToCustomer({
+    ...customer,
+    route_tags: customer.route_tags || customerRouteTags[customer.id] || [],
+    tags: mergedCustomTags.join(',')
+  })
 })
 mockOpportunities.push(...expandedOpportunities.map(opportunity => ({
   ...opportunity,

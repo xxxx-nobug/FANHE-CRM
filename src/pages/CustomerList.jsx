@@ -1,17 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Card, Input, Tag, Button, Empty, Modal, Spin, Cascader, Upload, message } from 'antd';
-import { TeamOutlined, RiseOutlined, UserOutlined, EnvironmentOutlined, EditOutlined, PlusOutlined, PhoneOutlined, MailOutlined, DeleteOutlined, TagsOutlined, FileExcelOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import { Card, Input, Tag, Button, Empty, Modal, Spin, Cascader, Upload, message, Select } from 'antd';
+import { TeamOutlined, RiseOutlined, UserOutlined, EnvironmentOutlined, EditOutlined, PlusOutlined, PhoneOutlined, MailOutlined, DeleteOutlined, TagsOutlined, FileExcelOutlined, DownloadOutlined, UploadOutlined, CompassOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   customerMatchesLocation,
   FOREIGN_LOCATION_VALUE,
   getCustomerIndustryTags,
   getCustomerLocationLabel,
+  getCustomerRouteTags,
   getCustomTags,
   getIndustryPath,
   getIndustryValuesByPath,
   industryOptions,
-  locationOptions
+  locationOptions,
+  routeOptions
 } from '../constants/customerDictionaries';
 import { downloadCustomerTemplate, exportCustomersToExcel, parseCustomersFromExcel } from '../utils/customerExcel';
 import { addSearchHistory, getSearchHistory } from '../utils/searchHistory';
@@ -40,6 +42,7 @@ const CustomerList = ({ user, customers, setCustomers }) => {
   const [searchText, setSearchText] = useState(searchParams.get('q') || '');
   const [selectedLocation, setSelectedLocation] = useState(getQueryLocation);
   const [selectedIndustry, setSelectedIndustry] = useState(getQueryIndustry);
+  const [selectedRoutes, setSelectedRoutes] = useState([]);
   const [searchHistory, setSearchHistory] = useState(() => getSearchHistory(CUSTOMER_SEARCH_HISTORY_KEY));
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
   const [isExcelModalVisible, setIsExcelModalVisible] = useState(false);
@@ -51,21 +54,26 @@ const CustomerList = ({ user, customers, setCustomers }) => {
     setSearchText(searchParams.get('q') || '');
     setSelectedLocation(getQueryLocation());
     setSelectedIndustry(getQueryIndustry());
+    setSelectedRoutes([]);
     setDisplayCount(5);
   }, [location.search]);
 
   const filteredCustomers = customers.filter(customer => {
     const industryTags = getCustomerIndustryTags(customer);
+    const routeTags = getCustomerRouteTags(customer);
     const customTags = getCustomTags(customer);
     const selectedIndustryValues = getIndustryValuesByPath(selectedIndustry);
     const matchesSearch = customer.company_name.includes(searchText) || 
                          (customer.address && customer.address.includes(searchText)) ||
                          industryTags.some(tag => tag.includes(searchText)) ||
+                         routeTags.some(tag => tag.includes(searchText)) ||
                          customTags.some(tag => tag.includes(searchText));
     const matchesLocation = customerMatchesLocation(customer, selectedLocation);
     const matchesIndustry = selectedIndustryValues.length === 0 ||
       industryTags.some(tag => selectedIndustryValues.includes(tag));
-    return matchesSearch && matchesLocation && matchesIndustry;
+    const matchesRoute = selectedRoutes.length === 0 ||
+      selectedRoutes.some(route => routeTags.includes(route));
+    return matchesSearch && matchesLocation && matchesIndustry && matchesRoute;
   });
 
   // 懒加载：监听滚动事件
@@ -108,6 +116,11 @@ const CustomerList = ({ user, customers, setCustomers }) => {
 
   const handleIndustryChange = (value) => {
     setSelectedIndustry(value || []);
+    setDisplayCount(5);
+  };
+
+  const handleRouteChange = (value) => {
+    setSelectedRoutes(value || []);
     setDisplayCount(5);
   };
 
@@ -257,6 +270,17 @@ const CustomerList = ({ user, customers, setCustomers }) => {
             placement="bottomLeft"
             getPopupContainer={() => containerRef.current || document.body}
           />
+          <Select
+            className="filter-route-select"
+            mode="multiple"
+            options={routeOptions}
+            value={selectedRoutes}
+            onChange={handleRouteChange}
+            placeholder="航线标签"
+            allowClear
+            maxTagCount="responsive"
+            getPopupContainer={() => containerRef.current || document.body}
+          />
         </div>
       </section>
 
@@ -288,25 +312,26 @@ const CustomerList = ({ user, customers, setCustomers }) => {
                 <span><UserOutlined /> {customer.created_by === 1 ? 'admin' : '未知'}</span>
               </div>
 
-              {getCustomerIndustryTags(customer).length > 0 && (
+              {(getCustomerIndustryTags(customer).length > 0 || getCustomerRouteTags(customer).length > 0 || getCustomTags(customer).length > 0) && (
                 <div className="tags-section">
-                  {getCustomerIndustryTags(customer).slice(0, 4).map(tag => (
+                  {getCustomerIndustryTags(customer).slice(0, 3).map(tag => (
                     <Tag key={tag} color="green" icon={<TagsOutlined />}>
                       {tag}
                     </Tag>
                   ))}
-                </div>
-              )}
-
-              {getCustomTags(customer).length > 0 && (
-                <div className="tags-section">
-                  {getCustomTags(customer).slice(0, 3).map((trimmedTag, index) => (
-                      <Tag 
-                        key={index} 
-                        color={trimmedTag === '黑名单' ? 'red' : 'blue'}
-                      >
-                        {trimmedTag}
-                      </Tag>
+                  {getCustomerRouteTags(customer).slice(0, 2).map(tag => (
+                    <Tag key={tag} color="purple" icon={<CompassOutlined />} className="route-tag">
+                      {tag}
+                    </Tag>
+                  ))}
+                  {getCustomTags(customer).slice(0, 2).map(trimmedTag => (
+                    <Tag
+                      key={trimmedTag}
+                      color={trimmedTag === '黑名单' ? 'red' : 'orange'}
+                      className={trimmedTag === '黑名单' ? '' : 'custom-tag'}
+                    >
+                      {trimmedTag}
+                    </Tag>
                   ))}
                 </div>
               )}

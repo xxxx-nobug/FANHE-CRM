@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Card, Descriptions, Tag, Button, List, Avatar, message, Modal, Form, Input, Select } from 'antd';
-import { EnvironmentOutlined, PhoneOutlined, MailOutlined, EditOutlined, PlusOutlined, UserOutlined, WarningOutlined, CheckCircleOutlined, MessageOutlined } from '@ant-design/icons';
+import { EnvironmentOutlined, PhoneOutlined, MailOutlined, EditOutlined, PlusOutlined, UserOutlined, WarningOutlined, CheckCircleOutlined, MessageOutlined, CompassOutlined } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCustomerIndustryTags, getCustomerLocationLabel, getCustomTags } from '../constants/customerDictionaries';
+import { getCustomerIndustryTags, getCustomerLocationLabel, getCustomerRouteTags, getCustomTags } from '../constants/customerDictionaries';
 import './CustomerDetail.css';
 
 const backgroundTypeOptions = [
@@ -169,6 +169,13 @@ const CustomerDetail = ({ user, customers }) => {
               ))
             ) : '-'}
           </Descriptions.Item>
+          {getCustomerRouteTags(customer).length > 0 && (
+            <Descriptions.Item label="航线标签">
+              {getCustomerRouteTags(customer).map((tag) => (
+                <Tag key={tag} color="purple" icon={<CompassOutlined />}>{tag}</Tag>
+              ))}
+            </Descriptions.Item>
+          )}
           {getCustomTags(customer).length > 0 && (
             <Descriptions.Item label="其他标签">
               {getCustomTags(customer).map((tag, index) => (

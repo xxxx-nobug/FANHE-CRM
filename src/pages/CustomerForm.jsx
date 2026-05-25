@@ -4,13 +4,16 @@ import { UploadOutlined, SaveOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   FOREIGN_LOCATION_VALUE,
+  customTagOptions,
   flattenIndustryPaths,
   getCustomerIndustryTags,
   getCustomerLocationPath,
+  getCustomerRouteTags,
   getCustomTags,
   getIndustryPathsFromTags,
   industryOptions,
-  locationOptions
+  locationOptions,
+  routeOptions
 } from '../constants/customerDictionaries';
 import './CustomerForm.css';
 
@@ -36,6 +39,7 @@ const CustomerForm = ({ user, customers = [], setCustomers, setNotifications }) 
           company_name: customer.company_name,
           location_path: getCustomerLocationPath(customer),
           industry_paths: getIndustryPathsFromTags(getCustomerIndustryTags(customer)),
+          route_tags: getCustomerRouteTags(customer),
           credit_code: customer.credit_code,
           address: customer.address,
           phone: customer.phone,
@@ -68,6 +72,7 @@ const CustomerForm = ({ user, customers = [], setCustomers, setNotifications }) 
     setTimeout(() => {
       const tags = values.tags ? values.tags.join(',') : '';
       const industryTags = flattenIndustryPaths(values.industry_paths);
+      const routeTags = values.route_tags || [];
       const [locationLevel1, locationLevel2] = values.location_path || [];
       const isForeign = locationLevel1 === FOREIGN_LOCATION_VALUE;
       const customerData = {
@@ -78,6 +83,7 @@ const CustomerForm = ({ user, customers = [], setCustomers, setNotifications }) 
         city: isForeign ? null : locationLevel2,
         country: isForeign ? locationLevel2 : null,
         industry_tags: industryTags,
+        route_tags: routeTags,
         tags,
         contacts: isEdit ? customers.find(customer => customer.id === parseInt(customerId))?.contacts || [] : [],
         opportunities: isEdit ? customers.find(customer => customer.id === parseInt(customerId))?.opportunities || [] : [],
@@ -198,6 +204,20 @@ const CustomerForm = ({ user, customers = [], setCustomers, setNotifications }) 
           </Form.Item>
 
           <Form.Item
+            name="route_tags"
+            label="航线标签"
+          >
+            <Select
+              mode="multiple"
+              options={routeOptions}
+              placeholder="可选，选择客户对应航线"
+              maxTagCount="responsive"
+              allowClear
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+
+          <Form.Item
             name="address"
             label="地址"
           >
@@ -244,7 +264,10 @@ const CustomerForm = ({ user, customers = [], setCustomers, setNotifications }) 
           >
             <Select 
               mode="tags" 
-              placeholder="输入补充标签后按回车"
+              options={customTagOptions}
+              placeholder="可选预设标签，也可输入后按回车"
+              maxTagCount="responsive"
+              allowClear
               style={{ width: '100%' }}
             />
           </Form.Item>

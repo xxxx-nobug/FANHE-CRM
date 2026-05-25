@@ -160,13 +160,19 @@
   margin-bottom: 0;
 }
 
-.filter-cascader {
+.filter-cascader,
+.filter-route-select {
   width: 100%;
 }
 
-.filter-cascader .ant-select-selector {
+.filter-cascader .ant-select-selector,
+.filter-route-select .ant-select-selector {
   min-height: 42px;
   border-radius: 12px;
+}
+
+.filter-route-select {
+  grid-column: 1 / -1;
 }
 
 .customer-card {
@@ -243,6 +249,18 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.route-tag {
+  color: #4f6375 !important;
+  background: #f3f7fa !important;
+  border-color: #d9e5ee !important;
+}
+
+.custom-tag {
+  color: #5f6b7a !important;
+  background: #f7f9fb !important;
+  border-color: #dde6ee !important;
 }
 
 .contact-info {

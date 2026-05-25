@@ -191,6 +191,37 @@ export const industryOptions = [
   }
 ];
 
+export const routeOptions = [
+  '地中海航线',
+  '南美航线',
+  '中东航线',
+  '非洲航线',
+  '欧洲航线',
+  '北美航线',
+  '东南亚航线',
+  '日韩航线',
+  '澳新航线',
+  '印巴航线',
+  '红海航线',
+  '黑海航线'
+].map(label => ({ value: label, label }));
+
+export const customTagOptions = [
+  '散货船东',
+  '特种箱船东',
+  '集装箱船东',
+  '油化船东',
+  '冷藏箱客户',
+  '危险品客户',
+  '大宗货主',
+  '项目货客户',
+  '重点客户',
+  '潜在客户',
+  '长期合作',
+  '需重点跟进',
+  '黑名单'
+].map(label => ({ value: label, label }));
+
 const splitTags = (tags) => {
   if (Array.isArray(tags)) {
     return tags.filter(Boolean);
@@ -262,9 +293,17 @@ export const getCustomerIndustryTags = (customer) => {
   return [...new Set(mappedTags)];
 };
 
+export const getCustomerRouteTags = (customer) => {
+  if (Array.isArray(customer?.route_tags)) {
+    return customer.route_tags.filter(Boolean);
+  }
+  return splitTags(customer?.route_tags);
+};
+
 export const getCustomTags = (customer) => {
   const industryTags = new Set(getCustomerIndustryTags(customer));
-  return splitTags(customer?.tags).filter(tag => !industryTags.has(tag));
+  const routeTags = new Set(getCustomerRouteTags(customer));
+  return splitTags(customer?.tags).filter(tag => !industryTags.has(tag) && !routeTags.has(tag));
 };
 
 export const getCustomerLocationPath = (customer) => {
