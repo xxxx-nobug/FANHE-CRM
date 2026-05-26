@@ -22,6 +22,7 @@ const MainLayout = ({ children, user }) => {
     { match: /^\/reports\/.+/, path: '/reports' },
     { match: /^\/notifications$/, path: '/my' },
     { match: /^\/users$/, path: '/my' },
+    { match: /^\/tag-management$/, path: '/my' },
     { match: /^\/create-user$/, path: '/my' }
   ];
 

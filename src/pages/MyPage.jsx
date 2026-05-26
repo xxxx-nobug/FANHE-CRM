@@ -6,7 +6,8 @@ import {
   UserAddOutlined, 
   LogoutOutlined,
   KeyOutlined,
-  BellOutlined
+  BellOutlined,
+  TagsOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import './MyPage.css';
@@ -45,6 +46,13 @@ const MyPage = ({ user, notifications = [], onLogout }) => {
       title: '用户管理',
       description: '管理系统用户',
       onClick: () => navigate('/users'),
+      adminOnly: true
+    },
+    {
+      icon: <TagsOutlined />,
+      title: '标签管理',
+      description: '维护客户标签词典',
+      onClick: () => navigate('/tag-management'),
       adminOnly: true
     },
     {

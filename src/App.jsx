@@ -18,6 +18,7 @@ import MyPage from './pages/MyPage';
 import NotificationCenter from './pages/NotificationCenter';
 import UserManagement from './pages/UserManagement';
 import CreateUser from './pages/CreateUser';
+import TagManagement from './pages/TagManagement';
 import Login from './pages/Login';
 import { mockCustomers, mockNotifications } from './mock/data';
 import './App.css';
@@ -109,6 +110,7 @@ function App() {
                     <Route path="/my" element={<MyPage user={user} notifications={notifications} onLogout={handleLogout} />} />
                     <Route path="/notifications" element={<NotificationCenter user={user} notifications={notifications} setNotifications={setNotifications} />} />
                     <Route path="/users" element={<UserManagement />} />
+                    <Route path="/tag-management" element={<TagManagement user={user} />} />
                     <Route path="/create-user" element={<CreateUser />} />
                   </Routes>
                 </MainLayout>

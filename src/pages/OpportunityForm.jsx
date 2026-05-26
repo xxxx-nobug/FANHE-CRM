@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Form, Select, Input, Button, message, Mentions } from 'antd';
+import { Card, Form, Select, Button, message, Mentions } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { mockCustomers, mockOpportunities, mockUsers } from '../mock/data';
 import './OpportunityForm.css';
 
 const { Option } = Select;
+
+const statusOptions = ['跟进中', '签约', '暂停', '关闭'];
 
 const OpportunityForm = () => {
   const [form] = Form.useForm();
@@ -24,12 +26,18 @@ const OpportunityForm = () => {
       if (opportunity) {
         form.setFieldsValue({
           customer_id: opportunity.customer_id || 0,
+          status: opportunity.status || '跟进中',
           description: opportunity.description
         });
       }
     } else if (preselectedCustomerId) {
       form.setFieldsValue({
-        customer_id: parseInt(preselectedCustomerId)
+        customer_id: parseInt(preselectedCustomerId),
+        status: '跟进中',
+      });
+    } else {
+      form.setFieldsValue({
+        status: '跟进中',
       });
     }
   }, [opportunityId, form, isEdit, preselectedCustomerId]);
@@ -81,6 +89,18 @@ const OpportunityForm = () => {
                 <Option key={customer.id} value={customer.id}>
                   {customer.company_name}
                 </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="status"
+            label="跟进状态"
+            rules={[{ required: true, message: '请选择跟进状态' }]}
+          >
+            <Select placeholder="请选择跟进状态">
+              {statusOptions.map(status => (
+                <Option key={status} value={status}>{status}</Option>
               ))}
             </Select>
           </Form.Item>
